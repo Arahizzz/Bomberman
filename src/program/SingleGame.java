@@ -17,6 +17,8 @@ public class SingleGame extends Application {
         primaryStage.setTitle("Single game");
         Group group = new Group();
         primaryStage.setScene(new Scene(group,WIN_WIDTH,WIN_HEIGTH));
+        GamePlayGround gamePlayGround = new GamePlayGround(WIN_WIDTH,WIN_HEIGTH);
+        gamePlayGround.drawGrid(group.getChildren());
         primaryStage.show();
     }
 
