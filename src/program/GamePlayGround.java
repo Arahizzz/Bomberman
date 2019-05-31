@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.awt.*;
 import java.util.Random;
 
 public class GamePlayGround {
@@ -12,6 +13,7 @@ public class GamePlayGround {
     int blockSize;
     int blockNumberY = 13;
     int blockNumberX = 17;
+    Point spawnCoordinates;
     Random random = new Random();
 
     GamePlayGround(int WinWidth, int WinHeight) {
@@ -19,11 +21,116 @@ public class GamePlayGround {
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(20); //set grass persantage
-        generateSpawnPoint();
+        generateBlocks(10); //set grass persantage
+        spawnCoordinates = generateSpawnPoint();
+        generateSpawnArea(spawnCoordinates.x, spawnCoordinates.y);
     }
 
-    private void generateSpawnPoint() {
+    private void generateSpawnArea(int row, int column) {
+
+        ///////////case Corners
+        if (row == 1) { // top corners
+
+            if (column == 1) { //left top
+                blockArray[row][column + 1] = new GrassBrick((column + 1) * blockSize, row * blockSize, blockSize, blockSize);
+                blockArray[row + 1][column] = new GrassBrick(column * blockSize, (row + 1) * blockSize, blockSize, blockSize);
+                return;
+            }
+
+            if (column == 15) {//right top
+                blockArray[row][column - 1] = new GrassBrick((column - 1) * blockSize, row * blockSize, blockSize, blockSize);
+                blockArray[row + 1][column] = new GrassBrick(column * blockSize, (row + 1) * blockSize, blockSize, blockSize);
+                return;
+            }
+
+        }
+
+        if (row == 11) {//bottom corners
+
+            if (column == 1) {//left bottom
+                blockArray[row - 1][column] = new GrassBrick(column * blockSize, (row - 1) * blockSize, blockSize, blockSize);
+                blockArray[row][column + 1] = new GrassBrick((column + 1) * blockSize, row * blockSize, blockSize, blockSize);
+                return;
+            }
+
+            if (column == 15) {//right bottom
+                blockArray[row - 1][column] = new GrassBrick(column * blockSize, (row - 1) * blockSize, blockSize, blockSize);
+                blockArray[row][column - 1] = new GrassBrick((column - 1) * blockSize, row * blockSize, blockSize, blockSize);
+                return;
+            }
+
+        }
+
+        ///////////// case near stone block
+        if (row == 1 || row == 11) {//horizontal
+            if (column % 2 == 0) {
+                blockArray[row][column - 1] = new GrassBrick((column - 1) * blockSize, row * blockSize, blockSize, blockSize);
+                blockArray[row][column + 1] = new GrassBrick((column + 1) * blockSize, row * blockSize, blockSize, blockSize);
+                return;
+            }
+        }
+
+        if (column == 1 || column == 15) {//vertical
+            if (row % 2 == 0) {
+                blockArray[row - 1][column] = new GrassBrick(column * blockSize, (row - 1) * blockSize, blockSize, blockSize);
+                blockArray[row + 1][column] = new GrassBrick(column * blockSize, (row + 1) * blockSize, blockSize, blockSize);
+                return;
+            }
+        }
+
+        /////////////// case odd cells (between stones)
+        if (row == 1 || row == 11) {//horizontal
+            if (column % 2 == 1) {
+
+                if (MyRandom.randomPersantage(33)) {
+                    blockArray[row][column - 1] = new GrassBrick((column - 1) * blockSize, row * blockSize, blockSize, blockSize);
+                    blockArray[row][column + 1] = new GrassBrick((column + 1) * blockSize, row * blockSize, blockSize, blockSize);
+                    return;
+                } else {
+                    //задаємо блок в центр поля
+                    if (row == 1)
+                        blockArray[row + 1][column] = new GrassBrick(column * blockSize, (row + 1) * blockSize, blockSize, blockSize);
+                    else
+                        blockArray[row - 1][column] = new GrassBrick(column * blockSize, (row - 1) * blockSize, blockSize, blockSize);
+
+                    // визначаємо 2 блок
+                    if (random.nextBoolean())
+                        blockArray[row][column + 1] = new GrassBrick((column + 1) * blockSize, row * blockSize, blockSize, blockSize);
+                    else
+                        blockArray[row][column - 1] = new GrassBrick((column - 1) * blockSize, row * blockSize, blockSize, blockSize);
+                    return;
+                }
+
+            }
+        }
+
+        if (column == 1 || column == 15) {//vertical
+            if (row % 2 == 1) {
+                if (MyRandom.randomPersantage(33)) {
+                    blockArray[row - 1][column] = new GrassBrick(column * blockSize, (row - 1) * blockSize, blockSize, blockSize);
+                    blockArray[row + 1][column] = new GrassBrick(column * blockSize, (row + 1) * blockSize, blockSize, blockSize);
+                    return;
+                }else {
+                    //задаємо блок в центр поля
+                    if (column == 1)
+                        blockArray[row][column+1] = new GrassBrick((column+1) * blockSize, row * blockSize, blockSize, blockSize);
+                    else
+                        blockArray[row][column-1] = new GrassBrick((column-1) * blockSize, row * blockSize, blockSize, blockSize);
+
+                    // визначаємо 2 блок
+                    if (random.nextBoolean())
+                        blockArray[row+1][column] = new GrassBrick(column * blockSize, (row+1) * blockSize, blockSize, blockSize);
+                    else
+                        blockArray[row-1][column] = new GrassBrick(column * blockSize, (row-1) * blockSize, blockSize, blockSize);
+                    return;
+                }
+            }
+        }
+
+
+    }
+
+    private Point generateSpawnPoint() {
 
         int row;
         int column;
@@ -35,19 +142,20 @@ public class GamePlayGround {
             if (line == 0) row = 1;
             else row = 11;
 
-            column = random.nextInt(15)+1;
+            column = random.nextInt(15) + 1;
 
         } else { // horizontal
 
             if (line == 1) column = 1;
             else column = 15;
 
-            row = random.nextInt(11)+1;
+            row = random.nextInt(11) + 1;
 
         }
 
-    blockArray[row][column].setFill(Color.BLACK);
-
+        blockArray[row][column] = new GrassBrick(column * blockSize, row * blockSize, blockSize, blockSize);
+        blockArray[row][column].setFill(Color.BLACK); //spawn point
+        return new Point(row, column);
     }
 
     //generates Grass/Brick blocks
