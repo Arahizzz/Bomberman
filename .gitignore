@@ -20,6 +20,7 @@
 *.rar
 
 *.kotlin_module
+*.fxml
 
 .idea/
 
