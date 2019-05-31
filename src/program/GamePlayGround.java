@@ -10,20 +10,27 @@ import java.util.Random;
 
 public class GamePlayGround {
     GameBlock[][] blockArray;
+
     int blockSize;
+
     int blockNumberY = 13;
     int blockNumberX = 17;
     Point spawnCoordinates;
     Random random = new Random();
-
-    GamePlayGround(int WinWidth, int WinHeight) {
-
+    Player player;
+    ObservableList<Node> children;
+    GamePlayGround(ObservableList<Node> children,int WinWidth, int WinHeight) {
+this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
         generateBlocks(10); //set grass persantage
         spawnCoordinates = generateSpawnPoint();
         generateSpawnArea(spawnCoordinates.x, spawnCoordinates.y);
+    }
+    public void initPlayer(){
+        player = new Player(spawnCoordinates);
+        children.add(player);
     }
 
     private void generateSpawnArea(int row, int column) {
@@ -155,10 +162,11 @@ public class GamePlayGround {
 
         blockArray[row][column] = new GrassBrick(column * blockSize, row * blockSize, blockSize, blockSize);
         blockArray[row][column].setFill(Color.BLACK); //spawn point
-        return new Point(row, column);
+        return new Point(column*blockSize, row*blockSize);
     }
 
     //generates Grass/Brick blocks
+
     private void generateBlocks(int grassPersantage) {
 
         //рожева цегла непарні сплошні рядки
@@ -176,15 +184,14 @@ public class GamePlayGround {
         }
 
     }
-
     //persantage of grass
+
     private GameBlock randomBrickOrGrass(int grassPersantage, int i, int j) {
         if (MyRandom.randomPersantage(grassPersantage))
             return new GrassBrick(blockSize * j, i * blockSize, blockSize, blockSize);
 
         return new RedBrick(blockSize * j, i * blockSize, blockSize, blockSize);
     }
-
     private void initStoneBlocks() {
         //задаємо бетонну рамку
         // верх і низ
@@ -209,7 +216,7 @@ public class GamePlayGround {
 
     }
 
-    public void drawGrid(ObservableList<Node> children) {
+    public void drawGrid() {
 
         for (int i = 0; i < blockNumberY; i++)
             for (int j = 0; j < blockNumberX; j++)
@@ -220,5 +227,7 @@ public class GamePlayGround {
     public Rectangle getElementAt(int row, int column) {
         return blockArray[row][column];
     }
+
+
 
 }
