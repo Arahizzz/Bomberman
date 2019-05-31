@@ -41,3 +41,11 @@ class RedBrick extends GameBlock {
     }
 }
 
+class GrassBrick extends GameBlock {
+
+    public GrassBrick(int x, int y, int width, int height) {
+        super(x, y, width, height, false, true);
+        setStroke(Color.BLACK);
+        setFill(Color.GREEN);
+    }
+}
