@@ -21,7 +21,7 @@ public class GamePlayGround {
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(10); //set grass persantage
+        generateBlocks(50); //set grass persantage
         spawnCoordinates = generateSpawnPoint();
         generateSpawnArea(spawnCoordinates.x, spawnCoordinates.y);
     }
