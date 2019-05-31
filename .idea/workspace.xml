@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32157002-e24e-492d-8902-0d91f6967caa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/program/MyRandom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Bomberman/program/GamePlayGround.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Bomberman/program/GamePlayGround.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Bomberman/program/RedBrick.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Bomberman/program/RedBrick.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Bomberman/program/StoneBrick.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Bomberman/program/StoneBrick.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/program/GameBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/program/GameBlock.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/program/GamePlayGround.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/program/GamePlayGround.java" afterDir="false" />
     </list>
@@ -46,8 +41,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/program/GameBlock.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-102">
-              <caret line="5" column="51" lean-forward="true" selection-start-line="5" selection-start-column="51" selection-end-line="5" selection-end-column="51" />
+            <state relative-caret-position="595">
+              <caret line="40" column="30" lean-forward="true" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -55,12 +50,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/program/GamePlayGround.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="54" selection-start-line="18" selection-start-column="54" selection-end-line="18" selection-end-column="54" />
+            <state relative-caret-position="391">
+              <caret line="44" column="35" selection-start-line="44" selection-start-column="35" selection-end-line="44" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2963#2964#0" expanded="true" />
-                <element signature="e#3013#3014#0" expanded="true" />
+                <element signature="e#3336#3337#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -96,8 +90,8 @@
         <option value="$PROJECT_DIR$/src/program/RedBrick.java" />
         <option value="$PROJECT_DIR$/src/GrassBrick.java" />
         <option value="$PROJECT_DIR$/src/program/GrassBrick.java" />
-        <option value="$PROJECT_DIR$/src/program/GameBlock.java" />
         <option value="$PROJECT_DIR$/src/program/MyRandom.java" />
+        <option value="$PROJECT_DIR$/src/program/GameBlock.java" />
         <option value="$PROJECT_DIR$/src/program/GamePlayGround.java" />
       </list>
     </option>
@@ -247,12 +241,12 @@
       <workItem from="1559117416926" duration="2017000" />
       <workItem from="1559134825555" duration="8586000" />
       <workItem from="1559211620468" duration="6618000" />
-      <workItem from="1559279533950" duration="4522000" />
+      <workItem from="1559279533950" duration="6205000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21743000" />
+    <option name="totallyTimeSpent" value="23426000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -376,13 +370,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/program/GameBlock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-102">
-          <caret line="5" column="51" lean-forward="true" selection-start-line="5" selection-start-column="51" selection-end-line="5" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/util/Random.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="290">
@@ -407,14 +394,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/program/GameBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="40" column="30" lean-forward="true" selection-start-line="40" selection-start-column="30" selection-end-line="40" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/program/GamePlayGround.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="54" selection-start-line="18" selection-start-column="54" selection-end-line="18" selection-end-column="54" />
+        <state relative-caret-position="391">
+          <caret line="44" column="35" selection-start-line="44" selection-start-column="35" selection-end-line="44" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2963#2964#0" expanded="true" />
-            <element signature="e#3013#3014#0" expanded="true" />
+            <element signature="e#3336#3337#0" expanded="true" />
           </folding>
         </state>
       </provider>

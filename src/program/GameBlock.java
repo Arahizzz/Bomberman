@@ -13,6 +13,7 @@ abstract public class GameBlock extends Rectangle {
         this.walkAllowed = walkAllowed;
     }
 
+
     public boolean isBreakable() {
         return breakable;
     }
