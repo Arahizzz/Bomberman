@@ -7,6 +7,14 @@ abstract public class GameBlock extends Rectangle {
     boolean breakable;
     boolean walkAllowed;
 
+    public void setBreakable(boolean breakable) {
+        this.breakable = breakable;
+    }
+
+    public void setWalkAllowed(boolean walkAllowed) {
+        this.walkAllowed = walkAllowed;
+    }
+
     public GameBlock(double x, double y, double width, double height, boolean breakable, boolean walkAllowed) {
         super(x, y, width, height);
         this.breakable = breakable;

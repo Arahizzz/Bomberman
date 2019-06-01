@@ -18,18 +18,27 @@ public class GamePlayGround {
     Point spawnCoordinates;
     Random random = new Random();
     Player player;
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     ObservableList<Node> children;
     GamePlayGround(ObservableList<Node> children,int WinWidth, int WinHeight) {
 this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(10); //set grass persantage
+        generateBlocks(50); //set grass persantage
         spawnCoordinates = generateSpawnPoint();
         generateSpawnArea((int)spawnCoordinates.getY()/blockSize, (int)spawnCoordinates.getX()/blockSize);
     }
     public void initPlayer(){
-        player = new Player(spawnCoordinates);
+        player = new Player(spawnCoordinates,blockArray,blockSize);
         children.add(player);
     }
 
@@ -161,7 +170,7 @@ this.children=children;
         }
 
         blockArray[row][column] = new GrassBrick(column * blockSize, row * blockSize, blockSize, blockSize);
-        blockArray[row][column].setFill(Color.BLACK); //spawn point
+      //spawn point
         return new Point(column*blockSize, row*blockSize);
     }
 
