@@ -31,7 +31,7 @@ public class Player extends Rectangle {
         super.setY(spawn.getY() + (blockSize - HEIGHT) / 2);
 
         currentBlock = spawn;
-        bounds = new Rectangle(((getLayoutX() + getWidth()) / 2) - 3, ((getLayoutY() + getHeight()) / 2) - 3, 5, 5);
+        bounds = new Rectangle((spawn.getX() + (blockSize - WIDTH) / 2), spawn.getY() + (blockSize - WIDTH) / 2, WIDTH, WIDTH);
         bounds.setOpacity(0);
 
         setFill(Color.RED);
@@ -39,23 +39,31 @@ public class Player extends Rectangle {
         timer.schedule(new TimerTask() {
             double x = getX();
             double y = getY();
+            double boundsX = bounds.getX();
+            double boundsY = bounds.getY();
 
             @Override
             public void run() {
-                if (side == Side.TOP && topIsClear())
+                if (side == Side.TOP && topIsClear()) {
                     y = getY() - SPEED;
-                else if (side == Side.BOTTOM && bottomIsClear())
+                    boundsY = boundsY - SPEED;
+                } else if (side == Side.BOTTOM && bottomIsClear()) {
                     y = getY() + SPEED;
-                else if (side == Side.LEFT && leftIsClear())
+                    boundsY = boundsY + SPEED;
+                } else if (side == Side.LEFT && leftIsClear()) {
                     x = getX() - SPEED;
-                else if (side == Side.RIGHT && rightIsClear())
+                    boundsX = boundsX - SPEED;
+                } else if (side == Side.RIGHT && rightIsClear()) {
                     x = getX() + SPEED;
+                    boundsX = boundsX + SPEED;
+                }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         setX(x);
                         setY(y);
-                        updateBounds();
+                        bounds.setX(boundsX);
+                        bounds.setY(boundsY);
                         updateBlock();
                     }
                 });
@@ -83,27 +91,22 @@ public class Player extends Rectangle {
     public void updateBlock() {
         switch (side) {
             case TOP:
-                if (getTopBlock().isInsideBlock(getBoundsInLocal()))
+                if (getTopBlock().isInsideBlock(getBounds().getBoundsInLocal()))
                     currentBlock = getTopBlock();
                 break;
             case LEFT:
-                if (getLeftBlock().isInsideBlock(getBoundsInLocal()))
+                if (getLeftBlock().isInsideBlock(getBounds().getBoundsInLocal()))
                     currentBlock = getLeftBlock();
                 break;
             case RIGHT:
-                if (getRightBlock().isInsideBlock(getBoundsInLocal()))
+                if (getRightBlock().isInsideBlock(getBounds().getBoundsInLocal()))
                     currentBlock = getRightBlock();
                 break;
             case BOTTOM:
-                if (getBottomBlock().isInsideBlock(getBoundsInLocal()))
+                if (getBottomBlock().isInsideBlock(getBounds().getBoundsInLocal()))
                     currentBlock = getBottomBlock();
                 break;
         }
-    }
-
-    public void updateBounds() {
-        bounds.setX(getX());
-        bounds.setY(getY());
     }
 
     private GameBlock getBottomBlock() {
@@ -123,19 +126,19 @@ public class Player extends Rectangle {
     }
 
     public boolean topIsClear() {
-        return currentBlock.isOnVerticalRail(this) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
+        return currentBlock.isOnVerticalRail(getBounds()) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
     }
 
     public boolean bottomIsClear() {
-        return currentBlock.isOnVerticalRail(this) && (getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < currentBlock.getY() + getHeight() - 2);
+        return currentBlock.isOnVerticalRail(getBounds()) && (getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < currentBlock.getY() + getHeight() - 2);
     }
 
     public boolean leftIsClear() {
-        return currentBlock.isOnHorizontalRail(this) && (getLeftBlock().isWalkAllowed() || getX() > currentBlock.getX() + 5);
+        return currentBlock.isOnHorizontalRail(getBounds()) && (getLeftBlock().isWalkAllowed() || getX() > currentBlock.getX() + 5);
     }
 
     public boolean rightIsClear() {
-        return currentBlock.isOnHorizontalRail(this) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
+        return currentBlock.isOnHorizontalRail(getBounds()) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
     }
 }
 

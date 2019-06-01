@@ -61,6 +61,7 @@ public class SingleGame extends Application {
             }
         });
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
     }
 
 }
