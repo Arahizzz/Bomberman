@@ -26,7 +26,7 @@ this.children=children;
         initStoneBlocks();
         generateBlocks(10); //set grass persantage
         spawnCoordinates = generateSpawnPoint();
-        generateSpawnArea(spawnCoordinates.x, spawnCoordinates.y);
+        generateSpawnArea((int)spawnCoordinates.getY()/blockSize, (int)spawnCoordinates.getX()/blockSize);
     }
     public void initPlayer(){
         player = new Player(spawnCoordinates);

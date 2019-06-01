@@ -18,7 +18,8 @@ public class Player extends Rectangle {
         super.setWidth(WIDTH);
         super.setHeight(HEIGHT);
 
-        locationX=location.x;
+       super.setX(location.getX());
+        super.setY(location.getY());
         locationY=location.y;
 
         setFill(Color.RED);
