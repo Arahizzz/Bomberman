@@ -1,20 +1,25 @@
 package program;
 
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Player extends Rectangle {
 
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
-    private static final int SPEED = 5;
+    private static final int SPEED = 2;
     Point centerLocation;// координати центру гравця
     GameBlock[][] blockArray;
     int blockSize;
+    Side side;
 
     // додати характеристи
     Player(Point location, GameBlock[][] blockArray, int blockSize) { //Point location - це координати блоку (лівий верхній кут)
@@ -29,6 +34,30 @@ public class Player extends Rectangle {
         super.setY(location.getY() + (blockSize - HEIGHT) / 2);
 
         setFill(Color.RED);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            double x = getX();
+            double y = getY();
+
+            @Override
+            public void run() {
+                if (side == Side.TOP)
+                    y = getY() - SPEED;
+                else if (side == Side.BOTTOM)
+                    y = getY() + SPEED;
+                else if (side == Side.LEFT)
+                    x = getX() - SPEED;
+                else if (side == Side.RIGHT)
+                    x = getX() + SPEED;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        setX(x);
+                        setY(y);
+                    }
+                });
+            }
+        }, 0, 10);
 
     }
 
@@ -37,36 +66,12 @@ public class Player extends Rectangle {
     }
 
 
-    public void moveUp() {
-        super.setY(super.getY() - SPEED);
-//        if (topClear()) {
-//            super.setY(super.getY() - SPEED);
-//            centerLocation.setLocation(centerLocation.getX(),centerLocation.getY()-SPEED);
-//        }
+    public Side getSide() {
+        return side;
     }
 
-    public void moveDown() {
-        super.setY(super.getY() + SPEED);
-//        if (bottomClear()) {
-//            super.setY(super.getY() + SPEED);
-//            centerLocation.setLocation(centerLocation.getX(),centerLocation.getY()+SPEED);
-//        }
-    }
-
-    public void moveLeft() {
-        super.setX(super.getX() - SPEED);
-//        if (leftClear()) {
-//            super.setX(super.getX() - SPEED);
-//centerLocation.setLocation(centerLocation.getX()-SPEED,centerLocation.getY());
-//        }
-    }
-
-    public void moveRight() {
-        super.setX(super.getX() + SPEED);
-//        if (rightClear()) {
-//            super.setX(super.getX() + SPEED);
-//            centerLocation.setLocation(centerLocation.getX()+SPEED,centerLocation.getY());
-//        }
+    public void setSide(Side side) {
+        this.side = side;
     }
 
     public boolean topClear() {
@@ -85,4 +90,8 @@ public class Player extends Rectangle {
     public boolean rightClear() {
         return blockArray[(int) getArrayCoordinates().getX()][(int) getArrayCoordinates().getY() + 1].isWalkAllowed();
     }
+}
+
+enum Side {
+    LEFT, RIGHT, TOP, BOTTOM, NONE
 }

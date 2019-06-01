@@ -39,12 +39,25 @@ public class SingleGame extends Application {
             @Override
             public void handle(KeyEvent event) {
                 switch (event.getCode()){
-
-                    case UP: gamePlayGround.getPlayer().moveUp();
-                    case DOWN: gamePlayGround.getPlayer().moveDown();
-                    case LEFT: gamePlayGround.getPlayer().moveLeft();
-                    case RIGHT: gamePlayGround.getPlayer().moveRight();
+                    case UP:
+                        gamePlayGround.getPlayer().setSide(Side.TOP);
+                        break;
+                    case DOWN:
+                        gamePlayGround.getPlayer().setSide(Side.BOTTOM);
+                        break;
+                    case LEFT:
+                        gamePlayGround.getPlayer().setSide(Side.LEFT);
+                        break;
+                    case RIGHT:
+                        gamePlayGround.getPlayer().setSide(Side.RIGHT);
+                        break;
                 }
+            }
+        });
+        scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                gamePlayGround.getPlayer().setSide(Side.NONE);
             }
         });
         primaryStage.show();
