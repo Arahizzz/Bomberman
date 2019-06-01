@@ -1,7 +1,9 @@
 package program;
 
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 import java.awt.*;
@@ -34,7 +36,8 @@ public class Player extends Rectangle {
         bounds = new Rectangle((spawn.getX() + (blockSize - WIDTH) / 2), spawn.getY() + (blockSize - WIDTH) / 2, WIDTH, WIDTH);
         bounds.setOpacity(0);
 
-        setFill(Color.RED);
+        javafx.scene.image.Image image = new Image("Bomberman\\Front\\Bman_F_f00.png");
+        setFill(new ImagePattern(image));
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             double x = getX();
