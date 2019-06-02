@@ -41,15 +41,18 @@ public class SingleGame extends Application {
                 switch (event.getCode()){
                     case UP:
                         gamePlayGround.getPlayer().setSide(Side.TOP);
+                        gamePlayGround.getPlayer().setAnimationBack();
                         break;
                     case DOWN:
                         gamePlayGround.getPlayer().setSide(Side.BOTTOM);
+                        gamePlayGround.getPlayer().setAnimationFront();
                         break;
                     case LEFT:
                         gamePlayGround.getPlayer().setSide(Side.LEFT);
                         break;
                     case RIGHT:
                         gamePlayGround.getPlayer().setSide(Side.RIGHT);
+                        gamePlayGround.getPlayer().setAnimationRight();
                         break;
                 }
             }

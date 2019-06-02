@@ -36,8 +36,7 @@ public class Player extends Rectangle {
         bounds = new Rectangle((spawn.getX() + (blockSize - WIDTH) / 2), spawn.getY() + (blockSize - WIDTH) / 2, WIDTH, WIDTH);
         bounds.setOpacity(0);
 
-        javafx.scene.image.Image image = new Image("Bomberman\\Front\\Bman_F_f00.png");
-        setFill(new ImagePattern(image));
+        setAnimationFront();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             double x = getX();
@@ -73,6 +72,19 @@ public class Player extends Rectangle {
             }
         }, 0, 10);
 
+    }
+
+    public void setAnimationFront(){
+        // javafx.scene.image.Image image = new Image("Bomberman\\Front\\Bman_F_f00.png");
+        setFill(new ImagePattern(Animation.getPlayerAnimationFront()));
+    }
+
+    public void setAnimationBack(){
+        setFill(new ImagePattern(Animation.getPlayerAnimationBack()));
+    }
+
+    public void setAnimationRight(){
+        setFill(new ImagePattern(Animation.getPlayerAnimationRight()));
     }
 
     private Point getArrayCoordinates() {// повертає координати блока в масиві (рядок і стовчик)
