@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import jdk.nashorn.internal.ir.Block;
 
 import java.awt.*;
 import java.util.Timer;
@@ -25,6 +26,9 @@ public class Player extends Creature {
     }
 
     private void initAnimations() {
+        {
+            new Bomb(getCurrentBlock(), null, 0);
+        }
         setAnimationFront();
         Timer movement = new Timer();
         movement.schedule(new TimerTask() {
@@ -116,5 +120,9 @@ public class Player extends Creature {
                     setCurrentBlock(getBottomBlock());
                 break;
         }
+    }
+
+    public Bomb putBomb() {
+        return new Bomb(getCurrentBlock(), getBlockArray(), getBlockSize());
     }
 }

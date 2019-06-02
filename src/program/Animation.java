@@ -4,14 +4,14 @@ import javafx.scene.image.Image;
 
 public class Animation {
 
-    public static int currentFront = 0;
-    public static int currentBack = 0;
-    public static int currentSideRight = 0;
-    public static int currentSideLeft = 0;
-    public static Image[] playerAnimationFront = new Image[8];
-    public static Image[] playerAnimationBack = new Image[8];
-    public static Image[] playerAnimationLeft = new Image[8];
-    public static Image[] playerAnimationRight = new Image[8];
+    private static int currentFront = 0;
+    private static int currentBack = 0;
+    private static int currentSideRight = 0;
+    private static int currentSideLeft = 0;
+    private static Image[] playerAnimationFront = new Image[8];
+    private static Image[] playerAnimationBack = new Image[8];
+    private static Image[] playerAnimationLeft = new Image[8];
+    private static Image[] playerAnimationRight = new Image[8];
     static {
         for (int i=0;i<playerAnimationFront.length;i++) {
             playerAnimationFront[i] = new Image("Bomberman\\Front\\Bman_F_f0" + i + ".png");

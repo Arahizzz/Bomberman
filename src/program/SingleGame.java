@@ -62,6 +62,8 @@ public class SingleGame extends Application {
                     case RIGHT:
                         gamePlayGround.getPlayer().setSide(Side.RIGHT);
                         break;
+                    case SPACE:
+                        gamePlayGround.putBomb();
                 }
             }
         });

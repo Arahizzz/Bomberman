@@ -57,6 +57,23 @@ abstract public class Entity extends Rectangle {
         return blockArray[currentBlock.getVerticalIndex() - 1][currentBlock.getHorizontalIndex()];
     }
 
+    GameBlock getBottomBlock(GameBlock block) {
+        return blockArray[block.getVerticalIndex() + 1][block.getHorizontalIndex()];
+    }
+
+    GameBlock getRightBlock(GameBlock block) {
+        return blockArray[block.getVerticalIndex()][block.getHorizontalIndex() + 1];
+    }
+
+    GameBlock getLeftBlock(GameBlock block) {
+        return blockArray[block.getVerticalIndex()][block.getHorizontalIndex() - 1];
+    }
+
+    GameBlock getTopBlock(GameBlock block) {
+        return blockArray[block.getVerticalIndex() - 1][block.getHorizontalIndex()];
+    }
+
+
     public boolean topIsClear() {
         return currentBlock.isOnVerticalRail(this) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
     }

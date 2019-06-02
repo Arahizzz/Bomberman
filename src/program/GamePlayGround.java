@@ -31,7 +31,7 @@ this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(90); //set grass persantage
+        generateBlocks(40); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
     }
@@ -235,6 +235,11 @@ this.children=children;
         return blockArray[row][column];
     }
 
+    public void putBomb() {
+        Bomb bomb = player.putBomb();
+        children.add(bomb);
+        bomb.start(children);
+    }
 
 
 }
