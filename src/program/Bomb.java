@@ -8,10 +8,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.function.UnaryOperator;
 
 public class Bomb extends Entity {
@@ -147,7 +145,7 @@ public class Bomb extends Entity {
 
             @Override
             protected Void doInBackground() throws Exception {
-                final int last = children.size() - 1;
+                LinkedList<Node> images = new LinkedList<>();
                 for (int i = 0; i < flames.length; i++) {
                     for (GameBlock block : damagedZone) {
                         ImageView imageView = new ImageView(flames[i]);
@@ -156,9 +154,10 @@ public class Bomb extends Entity {
                         imageView.setFitWidth(block.getWidth());
                         imageView.setFitHeight(block.getHeight());
                         Platform.runLater(() -> children.add(imageView));
+                        images.add(imageView);
                     }
                     Thread.sleep(100);
-                    Platform.runLater(() -> children.remove(last, children.size()));
+                    Platform.runLater(() -> children.removeAll(images));
                 }
                 return null;
             }
