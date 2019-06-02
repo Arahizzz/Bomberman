@@ -15,6 +15,7 @@ public class Player extends Rectangle {
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
     private static final double SPEED = 1.5;
+    public static final int INNERSIZE = 25;
     private GameBlock currentBlock;
     private GameBlock[][] blockArray;
     private int blockSize;
@@ -33,12 +34,12 @@ public class Player extends Rectangle {
         super.setY(spawn.getY() + (blockSize - HEIGHT) / 2);
 
         currentBlock = spawn;
-        bounds = new Rectangle((spawn.getX() + (blockSize - WIDTH) / 2), spawn.getY() + (blockSize - WIDTH) / 2, WIDTH, WIDTH);
+        bounds = new Rectangle((spawn.getX() + (blockSize - INNERSIZE) / 2), spawn.getY() + (blockSize - INNERSIZE) / 2, INNERSIZE, INNERSIZE);
         bounds.setOpacity(0);
 
         setAnimationFront();
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        Timer movement = new Timer();
+        movement.schedule(new TimerTask() {
             double x = getX();
             double y = getY();
             double boundsX = bounds.getX();
@@ -71,6 +72,26 @@ public class Player extends Rectangle {
                 });
             }
         }, 0, 10);
+        Timer animation = new Timer();
+        animation.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                switch (side) {
+                    case TOP:
+                        setAnimationBack();
+                        break;
+                    case BOTTOM:
+                        setAnimationFront();
+                        break;
+                    case RIGHT:
+                        setAnimationRight();
+                        break;
+                    case LEFT:
+                        setAnimationLeft();
+                        break;
+                }
+            }
+        }, 0, 100);
 
     }
 
@@ -85,6 +106,10 @@ public class Player extends Rectangle {
 
     public void setAnimationRight(){
         setFill(new ImagePattern(Animation.getPlayerAnimationRight()));
+    }
+
+    public void setAnimationLeft() {
+        setFill(new ImagePattern(Animation.getPlayerAnimationLeft()));
     }
 
     private Point getArrayCoordinates() {// повертає координати блока в масиві (рядок і стовчик)

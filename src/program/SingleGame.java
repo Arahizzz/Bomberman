@@ -35,24 +35,27 @@ public class SingleGame extends Application {
         primaryStage.setScene(scene);
         gamePlayGround.drawGrid();
         gamePlayGround.initPlayer();
+        initListeners(gamePlayGround);
+        primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
+    }
+
+    private void initListeners(GamePlayGround gamePlayGround) {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                switch (event.getCode()){
+                switch (event.getCode()) {
                     case UP:
                         gamePlayGround.getPlayer().setSide(Side.TOP);
-                        gamePlayGround.getPlayer().setAnimationBack();
                         break;
                     case DOWN:
                         gamePlayGround.getPlayer().setSide(Side.BOTTOM);
-                        gamePlayGround.getPlayer().setAnimationFront();
                         break;
                     case LEFT:
                         gamePlayGround.getPlayer().setSide(Side.LEFT);
                         break;
                     case RIGHT:
                         gamePlayGround.getPlayer().setSide(Side.RIGHT);
-                        gamePlayGround.getPlayer().setAnimationRight();
                         break;
                 }
             }
@@ -63,8 +66,6 @@ public class SingleGame extends Application {
                 gamePlayGround.getPlayer().setSide(Side.NONE);
             }
         });
-        primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
     }
 
 }

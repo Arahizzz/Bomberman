@@ -16,8 +16,8 @@ public class Animation {
         for (int i=0;i<playerAnimationFront.length;i++) {
             playerAnimationFront[i] = new Image("Bomberman\\Front\\Bman_F_f0" + i + ".png");
             playerAnimationBack[i] = new Image("Bomberman\\Back\\Bman_B_f0" + i + ".png");
-            playerAnimationRight[i] = new Image("Bomberman\\Side\\Bman_F_f0" + i + ".png");
-//            playerAnimationFront[i] = new Image("Bomberman\\Front\\Bman_F_f0" + i + ".png");
+            playerAnimationRight[i] = new Image("Bomberman\\Right\\Bman_F_f0" + i + ".png");
+            playerAnimationLeft[i] = new Image("Bomberman\\Left\\Bman_F_f0" + i + ".png");
         }
     }
 
@@ -39,6 +39,13 @@ public class Animation {
         Image image = playerAnimationFront[currentFront];
         currentFront++;
         if (currentFront==8) currentFront=0;
+        return image;
+    }
+
+    public static Image getPlayerAnimationLeft() {
+        Image image = playerAnimationLeft[currentSideLeft];
+        currentSideLeft++;
+        if (currentSideLeft == 8) currentSideLeft = 0;
         return image;
     }
 
