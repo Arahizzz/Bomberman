@@ -33,9 +33,9 @@ abstract public class GameBlock extends Rectangle {
         this.walkAllowed = walkAllowed;
         this.horizontalIndex = horizontalIndex;
         this.verticalIndex = verticalIndex;
-        verticalRail = new Rectangle(x + (width / 2) - 3, y, 5, height);
+        verticalRail = new Rectangle(x + (width / 2) - 4, y, 8, height);
         verticalRail.setOpacity(0);
-        horizontalRail = new Rectangle(x, y + (height / 2) - 3, width, 5);
+        horizontalRail = new Rectangle(x, y + (height / 2) - 15, width, 15);
         horizontalRail.setOpacity(0);
     }
 
@@ -65,7 +65,7 @@ abstract public class GameBlock extends Rectangle {
     }
 
     public boolean isInsideBlock(Bounds bounds) {
-        return bounds.getMinX() >= getX() && bounds.getMinY() >= getY() && bounds.getMaxX() <= getX() + getWidth() && bounds.getMaxY() <= getY() + getHeight();
+        return contains(new Point2D(bounds.getMinX(), bounds.getMaxY())) && bounds.contains(new Point2D(bounds.getMaxX(), bounds.getMaxY()));
     }
 }
 

@@ -15,7 +15,7 @@ public class Player extends Rectangle {
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
     private static final double SPEED = 1.5;
-    public static final int INNERSIZE = 25;
+    public static final int INNERSIZE = 40;
     private GameBlock currentBlock;
     private GameBlock[][] blockArray;
     private int blockSize;
@@ -47,6 +47,7 @@ public class Player extends Rectangle {
 
             @Override
             public void run() {
+                updateBlock();
                 if (side == Side.TOP && topIsClear()) {
                     y = getY() - SPEED;
                     boundsY = boundsY - SPEED;
@@ -67,7 +68,6 @@ public class Player extends Rectangle {
                         setY(y);
                         bounds.setX(boundsX);
                         bounds.setY(boundsY);
-                        updateBlock();
                     }
                 });
             }
@@ -76,20 +76,25 @@ public class Player extends Rectangle {
         animation.schedule(new TimerTask() {
             @Override
             public void run() {
-                switch (side) {
-                    case TOP:
-                        setAnimationBack();
-                        break;
-                    case BOTTOM:
-                        setAnimationFront();
-                        break;
-                    case RIGHT:
-                        setAnimationRight();
-                        break;
-                    case LEFT:
-                        setAnimationLeft();
-                        break;
-                }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (side) {
+                            case TOP:
+                                setAnimationBack();
+                                break;
+                            case BOTTOM:
+                                setAnimationFront();
+                                break;
+                            case RIGHT:
+                                setAnimationRight();
+                                break;
+                            case LEFT:
+                                setAnimationLeft();
+                                break;
+                        }
+                    }
+                });
             }
         }, 0, 100);
 
@@ -131,19 +136,19 @@ public class Player extends Rectangle {
     public void updateBlock() {
         switch (side) {
             case TOP:
-                if (getTopBlock().isInsideBlock(getBounds().getBoundsInLocal()))
+                if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
                     currentBlock = getTopBlock();
                 break;
             case LEFT:
-                if (getLeftBlock().isInsideBlock(getBounds().getBoundsInLocal()))
+                if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
                     currentBlock = getLeftBlock();
                 break;
             case RIGHT:
-                if (getRightBlock().isInsideBlock(getBounds().getBoundsInLocal()))
+                if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
                     currentBlock = getRightBlock();
                 break;
             case BOTTOM:
-                if (getBottomBlock().isInsideBlock(getBounds().getBoundsInLocal()))
+                if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
                     currentBlock = getBottomBlock();
                 break;
         }
@@ -166,19 +171,19 @@ public class Player extends Rectangle {
     }
 
     public boolean topIsClear() {
-        return currentBlock.isOnVerticalRail(getBounds()) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
+        return currentBlock.isOnVerticalRail(this) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
     }
 
     public boolean bottomIsClear() {
-        return currentBlock.isOnVerticalRail(getBounds()) && (getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < currentBlock.getY() + getHeight() - 2);
+        return currentBlock.isOnVerticalRail(this) && (getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < currentBlock.getY() + getHeight() - 2);
     }
 
     public boolean leftIsClear() {
-        return currentBlock.isOnHorizontalRail(getBounds()) && (getLeftBlock().isWalkAllowed() || getX() > currentBlock.getX() + 5);
+        return currentBlock.isOnHorizontalRail(this) && (getLeftBlock().isWalkAllowed() || getX() > currentBlock.getX() + 5);
     }
 
     public boolean rightIsClear() {
-        return currentBlock.isOnHorizontalRail(getBounds()) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
+        return currentBlock.isOnHorizontalRail(this) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
     }
 }
 
