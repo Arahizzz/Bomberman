@@ -20,7 +20,6 @@ public class Player extends Rectangle {
     private GameBlock[][] blockArray;
     private int blockSize;
     private Side side = Side.NONE;
-    private Rectangle bounds;
 
     // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize) { //Point location - це координати блоку (лівий верхній кут)
@@ -34,40 +33,35 @@ public class Player extends Rectangle {
         super.setY(spawn.getY() + (blockSize - HEIGHT) / 2);
 
         currentBlock = spawn;
-        bounds = new Rectangle((spawn.getX() + (blockSize - INNERSIZE) / 2), spawn.getY() + (blockSize - INNERSIZE) / 2, INNERSIZE, INNERSIZE);
-        bounds.setOpacity(0);
 
+        initAnimations();
+
+    }
+
+    private void initAnimations() {
         setAnimationFront();
         Timer movement = new Timer();
         movement.schedule(new TimerTask() {
             double x = getX();
             double y = getY();
-            double boundsX = bounds.getX();
-            double boundsY = bounds.getY();
 
             @Override
             public void run() {
                 updateBlock();
                 if (side == Side.TOP && topIsClear()) {
                     y = getY() - SPEED;
-                    boundsY = boundsY - SPEED;
                 } else if (side == Side.BOTTOM && bottomIsClear()) {
                     y = getY() + SPEED;
-                    boundsY = boundsY + SPEED;
                 } else if (side == Side.LEFT && leftIsClear()) {
                     x = getX() - SPEED;
-                    boundsX = boundsX - SPEED;
                 } else if (side == Side.RIGHT && rightIsClear()) {
                     x = getX() + SPEED;
-                    boundsX = boundsX + SPEED;
                 }
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         setX(x);
                         setY(y);
-                        bounds.setX(boundsX);
-                        bounds.setY(boundsY);
                     }
                 });
             }
@@ -97,7 +91,6 @@ public class Player extends Rectangle {
                 });
             }
         }, 0, 100);
-
     }
 
     public void setAnimationFront(){
@@ -127,10 +120,6 @@ public class Player extends Rectangle {
 
     public void setSide(Side side) {
         this.side = side;
-    }
-
-    public Rectangle getBounds() {
-        return bounds;
     }
 
     public void updateBlock() {
