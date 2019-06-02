@@ -19,7 +19,9 @@
 *.tar.gz
 *.rar
 
-.kotlin_module
+*.kotlin_module
+*.fxml
+
 .idea/
 out/
 
