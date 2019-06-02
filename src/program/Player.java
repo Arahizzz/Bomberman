@@ -10,29 +10,15 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Player extends Rectangle {
+public class Player extends Creature {
 
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
     private static final double SPEED = 1.5;
-    public static final int INNERSIZE = 40;
-    private GameBlock currentBlock;
-    private GameBlock[][] blockArray;
-    private int blockSize;
-    private Side side = Side.NONE;
 
     // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize) { //Point location - це координати блоку (лівий верхній кут)
-        this.blockSize = blockSize;
-        this.blockArray = blockArray;
-
-        super.setWidth(WIDTH);
-        super.setHeight(HEIGHT);
-
-        super.setX(spawn.getX() + (blockSize - WIDTH) / 2); //встановлюємо гравця по цетрі квадратика
-        super.setY(spawn.getY() + (blockSize - HEIGHT) / 2);
-
-        currentBlock = spawn;
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize);
 
         initAnimations();
 
@@ -48,13 +34,13 @@ public class Player extends Rectangle {
             @Override
             public void run() {
                 updateBlock();
-                if (side == Side.TOP && topIsClear()) {
+                if (getSide() == Side.TOP && topIsClear()) {
                     y = getY() - SPEED;
-                } else if (side == Side.BOTTOM && bottomIsClear()) {
+                } else if (getSide() == Side.BOTTOM && bottomIsClear()) {
                     y = getY() + SPEED;
-                } else if (side == Side.LEFT && leftIsClear()) {
+                } else if (getSide() == Side.LEFT && leftIsClear()) {
                     x = getX() - SPEED;
-                } else if (side == Side.RIGHT && rightIsClear()) {
+                } else if (getSide() == Side.RIGHT && rightIsClear()) {
                     x = getX() + SPEED;
                 }
                 Platform.runLater(new Runnable() {
@@ -66,6 +52,7 @@ public class Player extends Rectangle {
                 });
             }
         }, 0, 10);
+
         Timer animation = new Timer();
         animation.schedule(new TimerTask() {
             @Override
@@ -73,7 +60,7 @@ public class Player extends Rectangle {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        switch (side) {
+                        switch (getSide()) {
                             case TOP:
                                 setAnimationBack();
                                 break;
@@ -110,72 +97,24 @@ public class Player extends Rectangle {
         setFill(new ImagePattern(Animation.getPlayerAnimationLeft()));
     }
 
-    private Point getArrayCoordinates() {// повертає координати блока в масиві (рядок і стовчик)
-        return new Point((int) (getX() / blockSize) + 1, (int) (getY() / blockSize) + 1);
-    }
-
-    public Side getSide() {
-        return side;
-    }
-
-    public void setSide(Side side) {
-        this.side = side;
-    }
-
     public void updateBlock() {
-        switch (side) {
+        switch (getSide()) {
             case TOP:
                 if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
-                    currentBlock = getTopBlock();
+                    setCurrentBlock(getTopBlock());
                 break;
             case LEFT:
                 if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
-                    currentBlock = getLeftBlock();
+                    setCurrentBlock(getLeftBlock());
                 break;
             case RIGHT:
                 if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
-                    currentBlock = getRightBlock();
+                    setCurrentBlock(getRightBlock());
                 break;
             case BOTTOM:
                 if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
-                    currentBlock = getBottomBlock();
+                    setCurrentBlock(getBottomBlock());
                 break;
         }
     }
-
-    private GameBlock getBottomBlock() {
-        return blockArray[currentBlock.getVerticalIndex() + 1][currentBlock.getHorizontalIndex()];
-    }
-
-    private GameBlock getRightBlock() {
-        return blockArray[currentBlock.getVerticalIndex()][currentBlock.getHorizontalIndex() + 1];
-    }
-
-    private GameBlock getLeftBlock() {
-        return blockArray[currentBlock.getVerticalIndex()][currentBlock.getHorizontalIndex() - 1];
-    }
-
-    private GameBlock getTopBlock() {
-        return blockArray[currentBlock.getVerticalIndex() - 1][currentBlock.getHorizontalIndex()];
-    }
-
-    public boolean topIsClear() {
-        return currentBlock.isOnVerticalRail(this) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
-    }
-
-    public boolean bottomIsClear() {
-        return currentBlock.isOnVerticalRail(this) && (getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < currentBlock.getY() + getHeight() - 2);
-    }
-
-    public boolean leftIsClear() {
-        return currentBlock.isOnHorizontalRail(this) && (getLeftBlock().isWalkAllowed() || getX() > currentBlock.getX() + 5);
-    }
-
-    public boolean rightIsClear() {
-        return currentBlock.isOnHorizontalRail(this) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
-    }
-}
-
-enum Side {
-    LEFT, RIGHT, TOP, BOTTOM, NONE
 }

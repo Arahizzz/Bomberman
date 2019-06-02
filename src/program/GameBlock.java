@@ -33,12 +33,19 @@ abstract public class GameBlock extends Rectangle {
         this.walkAllowed = walkAllowed;
         this.horizontalIndex = horizontalIndex;
         this.verticalIndex = verticalIndex;
-        verticalRail = new Rectangle(x + (width / 2) - 4, y, 8, height);
+        verticalRail = new Rectangle(x + (width / 2) - 4, y - 3, 8, height + 6);
         verticalRail.setOpacity(0);
-        horizontalRail = new Rectangle(x, y + (height / 2) - 15, width, 15);
+        horizontalRail = new Rectangle(x - 3, y + (height / 2) - 15, width + 6, 15);
         horizontalRail.setOpacity(0);
     }
 
+    public double getCenterCoordinatesX(int blockSize, double width) {
+        return getX() + (blockSize - width) / 2;
+    }
+
+    public double getCenterCoordinatesY(int blockSize, double height) {
+        return getY() + (blockSize - height) / 2;
+    }
 
     public boolean isBreakable() {
         return breakable;
