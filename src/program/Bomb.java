@@ -15,6 +15,8 @@ import java.util.function.UnaryOperator;
 public class Bomb extends Entity {
     private static Image[] animation = new Image[3];
     private static Image[] flames = new Image[5];
+    private static int maxCount = 3;
+    private static int currentCount = -1;
     private static int range = 1;
     private Bomb bomb = this;
 
@@ -27,9 +29,17 @@ public class Bomb extends Entity {
         }
     }
 
+    public static Bomb newBomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
+        if (!currentBlock.containsEntity() & currentCount < maxCount)
+            return new Bomb(currentBlock, blockArray, blockSize, children);
+        else
+            return null;
+    }
+
     public Bomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
         super(30, 30, currentBlock, blockArray, blockSize, children);
         setFill(new ImagePattern(animation[0]));
+        currentCount++;
     }
 
     public void start(ObservableList<Node> children) {
@@ -148,6 +158,7 @@ public class Bomb extends Entity {
             protected Void doInBackground() throws Exception {
                 LinkedList<Node> images = new LinkedList<>();
                 Platform.runLater(() -> children.remove(bomb));
+                currentCount--;
                 getCurrentBlock().setContainsEntity(false);
                 for (int i = 0; i < flames.length; i++) {
                     for (GameBlock block : damagedZone) {

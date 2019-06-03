@@ -123,11 +123,6 @@ public class Player extends Creature {
     }
 
     public Bomb putBomb() {
-        GameBlock block = getCurrentBlock();
-        if (!block.containsEntity()) {
-            block.setContainsEntity(true);
-            return new Bomb(block, getBlockArray(), getBlockSize(), getChildren());
-        } else
-            return null;
+        return Bomb.newBomb(getCurrentBlock(), getBlockArray(), getBlockSize(), getChildren());
     }
 }
