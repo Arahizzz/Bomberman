@@ -16,6 +16,7 @@ public class GamePlayGround {
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
+    private int grassPersantage=40;
 
     public Player getPlayer() {
         return player;
@@ -31,10 +32,11 @@ this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(40); //set grass persantage
+        generateBlocks(grassPersantage); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
     }
+
     public void initPlayer(){
         player = new Player(spawn, blockArray, blockSize, children);
         children.add(player);

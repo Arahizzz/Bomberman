@@ -76,9 +76,12 @@ public class Bomb extends Entity {
                     if (node instanceof GameBlock && !(node instanceof GrassBlock)) {
                         GameBlock block = (GameBlock) node;
                         if (damagedZone.contains(block)) {
+
                             final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
                                     (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
+
                             blocks[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
+
                             return grassBlock;
                         }
                         return block;

@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 import java.awt.*;
+import java.util.Random;
 
 abstract public class GameBlock extends Rectangle {
     boolean breakable;
@@ -87,6 +88,8 @@ abstract public class GameBlock extends Rectangle {
     public void setContainsEntity(boolean containsEntity) {
         this.containsEntity = containsEntity;
     }
+
+
 }
 
 class StoneBrick extends GameBlock {
@@ -101,13 +104,38 @@ class StoneBrick extends GameBlock {
 
 
 class RedBrick extends GameBlock {
+    private static final int SPEED_BONUS = 0;
+    private static final int EXPLOSION_RANGE_BONUS = 1;
+    private static final int BOMB_AMOUNT_BONUS = 2;
+    private static final int HEART_BONUS = 3;// має менший шанс випасти
+    //ці бонуси робити окремо, бо вони мають випади один раз за гру (матимуть малий шанс дропу)
+    private static final int DETONATOR = 4; // бомби вибухають не по таймеру, за натиском кнопки гравцем
+    private static final int WALING_THROUGH_WALLS = 5; // гравець може ходити крізь блоки(трава та redbrick)
 
+    private int bonusChance = 50;
+    Random random = new Random();
     public RedBrick(int x, int y, int width, int height, int horizontalIndex, int verticalIndex) {
         super(x, y, width, height, true, false, horizontalIndex, verticalIndex);
         setStroke(Color.BLACK);
         Image image = new Image("Blocks\\ExplodableBlock.png");
         setFill(new ImagePattern(image));
     }
+
+    public Bonus generateBonus() {
+
+        if (MyRandom.randomPersantage(bonusChance)) {
+
+            int value = random.nextInt(3);
+
+            if (value == SPEED_BONUS) return new SpeedBonus(this);
+            // else if (value == EXPLOSION_RANGE_BONUS) return new ExplosionRangeBonus();
+            // else if (value == BOMB_AMOUNT_BONUS) return new BombAmountBonus();
+
+        }
+        return null;
+
+    }
+
 }
 
 class GrassBlock extends GameBlock {
