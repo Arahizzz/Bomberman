@@ -127,9 +127,9 @@ class RedBrick extends GameBlock {
 
             int value = random.nextInt(3);
 
-            if (value == SPEED_BONUS) return new SpeedBonus(this);
-            // else if (value == EXPLOSION_RANGE_BONUS) return new ExplosionRangeBonus();
-            // else if (value == BOMB_AMOUNT_BONUS) return new BombAmountBonus();
+           // if (value == SPEED_BONUS) return new SpeedBonus(this,this.size,null,null);
+          //  else if (value == EXPLOSION_RANGE_BONUS) return new ExplosionRangeBonus(this,this.size,null,null);
+           // else if (value == BOMB_AMOUNT_BONUS) return new BombAmountBonus(this,this.size,null,null);
 
         }
         return null;
