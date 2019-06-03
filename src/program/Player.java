@@ -1,6 +1,8 @@
 package program;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -18,16 +20,14 @@ public class Player extends Creature {
     private static final double SPEED = 1.5;
 
     // додати характеристи
-    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize) { //Point location - це координати блоку (лівий верхній кут)
-        super(WIDTH, HEIGHT, spawn, blockArray, blockSize);
-
+    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
         initAnimations();
-
     }
 
     private void initAnimations() {
         {
-            new Bomb(getCurrentBlock(), null, 0);
+            new Bomb(getCurrentBlock(), null, 0, null);
         }
         setAnimationFront();
         Timer movement = new Timer();
@@ -123,6 +123,11 @@ public class Player extends Creature {
     }
 
     public Bomb putBomb() {
-        return new Bomb(getCurrentBlock(), getBlockArray(), getBlockSize());
+        GameBlock block = getCurrentBlock();
+        if (!block.containsEntity()) {
+            block.setContainsEntity(true);
+            return new Bomb(block, getBlockArray(), getBlockSize(), getChildren());
+        } else
+            return null;
     }
 }

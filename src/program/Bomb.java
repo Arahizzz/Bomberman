@@ -27,15 +27,16 @@ public class Bomb extends Entity {
         }
     }
 
-    public Bomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize) {
-        super(30, 30, currentBlock, blockArray, blockSize);
+    public Bomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
+        super(30, 30, currentBlock, blockArray, blockSize, children);
+        setFill(new ImagePattern(animation[0]));
     }
 
     public void start(ObservableList<Node> children) {
         new BombHandler(children).execute();
     }
 
-    public static void incrementRange() {
+    public static void increaseRange() {
         range = range + 1;
     }
 
@@ -55,6 +56,7 @@ public class Bomb extends Entity {
         @Override
         protected void done() {
             new ExplosionHandler().execute();
+            new Killer().execute();
         }
 
         private void explode() {
@@ -80,7 +82,6 @@ public class Bomb extends Entity {
         @Override
         protected Void doInBackground() throws Exception {
             calculateDamage();
-            Platform.runLater(() -> setFill(new ImagePattern(animation[0])));
             Thread.sleep(1000);
             Platform.runLater(() -> setFill(new ImagePattern(animation[1])));
             Thread.sleep(1000);
@@ -146,6 +147,8 @@ public class Bomb extends Entity {
             @Override
             protected Void doInBackground() throws Exception {
                 LinkedList<Node> images = new LinkedList<>();
+                Platform.runLater(() -> children.remove(bomb));
+                getCurrentBlock().setContainsEntity(false);
                 for (int i = 0; i < flames.length; i++) {
                     for (GameBlock block : damagedZone) {
                         ImageView imageView = new ImageView(flames[i]);
@@ -164,8 +167,20 @@ public class Bomb extends Entity {
 
             @Override
             protected void done() {
-                Platform.runLater(() -> children.remove(bomb));
                 explode();
+            }
+        }
+
+        private class Killer extends SwingWorker<Void, Void> {
+            @Override
+            protected Void doInBackground() throws Exception {
+                for (GameBlock block : damagedZone) {
+                    for (Creature creature : Creature.getCreatures()) {
+                        if (block.containsCreature(creature))
+                            creature.decreaseLife();
+                    }
+                }
+                return null;
             }
         }
     }

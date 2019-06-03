@@ -18,6 +18,7 @@ abstract public class GameBlock extends Rectangle {
     private int verticalIndex;
     private Rectangle verticalRail;
     private Rectangle horizontalRail;
+    private boolean containsEntity = false;
 
     public void setBreakable(boolean breakable) {
         this.breakable = breakable;
@@ -73,6 +74,18 @@ abstract public class GameBlock extends Rectangle {
 
     public boolean isInsideBlock(Bounds bounds) {
         return contains(new Point2D(bounds.getMinX(), bounds.getMaxY())) && bounds.contains(new Point2D(bounds.getMaxX(), bounds.getMaxY()));
+    }
+
+    public boolean containsCreature(Creature creature) {
+        return intersects(creature.getBoundsInLocal());
+    }
+
+    public boolean containsEntity() {
+        return containsEntity;
+    }
+
+    public void setContainsEntity(boolean containsEntity) {
+        this.containsEntity = containsEntity;
     }
 }
 

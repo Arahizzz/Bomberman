@@ -1,20 +1,27 @@
 package program;
 
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
+
+import java.util.HashSet;
 
 
 abstract public class Entity extends Rectangle {
     private GameBlock currentBlock;
     private GameBlock[][] blockArray;
     private int blockSize;
+    private ObservableList<Node> children;
 
-    public Entity(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize) {
+    public Entity(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
         super(width, height);
         super.setX(currentBlock.getCenterCoordinatesX(blockSize, width));
         super.setY(currentBlock.getCenterCoordinatesY(blockSize, height));
         this.currentBlock = currentBlock;
         this.blockArray = blockArray;
         this.blockSize = blockSize;
+        this.children = children;
     }
 
     public GameBlock getCurrentBlock() {
@@ -90,13 +97,20 @@ abstract public class Entity extends Rectangle {
         return currentBlock.isOnHorizontalRail(this) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
     }
 
+    public ObservableList<Node> getChildren() {
+        return children;
+    }
 }
 
 abstract class Creature extends Entity {
     private Side side = Side.NONE;
+    private static HashSet<Creature> creatures = new HashSet<>();
+    private int life;
 
-    public Creature(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize) {
-        super(width, height, currentBlock, blockArray, blockSize);
+    public Creature(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int life) {
+        super(width, height, currentBlock, blockArray, blockSize, children);
+        this.life = life;
+        creatures.add(this);
     }
 
     public Side getSide() {
@@ -105,6 +119,20 @@ abstract class Creature extends Entity {
 
     public void setSide(Side side) {
         this.side = side;
+    }
+
+    public void kill() {
+        Platform.runLater(() -> getChildren().remove(this));
+        creatures.remove(this);
+    }
+
+    public static HashSet<Creature> getCreatures() {
+        return creatures;
+    }
+
+    public void decreaseLife() {
+        if (life-- == 0)
+            kill();
     }
 }
 

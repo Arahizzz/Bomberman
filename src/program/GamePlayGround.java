@@ -36,7 +36,7 @@ this.children=children;
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
     }
     public void initPlayer(){
-        player = new Player(spawn, blockArray, blockSize);
+        player = new Player(spawn, blockArray, blockSize, children);
         children.add(player);
     }
 
@@ -237,9 +237,10 @@ this.children=children;
 
     public void putBomb() {
         Bomb bomb = player.putBomb();
-        children.add(bomb);
-        bomb.start(children);
+        if (bomb != null) {
+            children.add(bomb);
+            bomb.start(children);
+        }
     }
-
 
 }
