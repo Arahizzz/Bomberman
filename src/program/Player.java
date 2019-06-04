@@ -10,19 +10,24 @@ import javafx.scene.shape.Rectangle;
 import jdk.nashorn.internal.ir.Block;
 
 import java.awt.*;
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Player extends Creature {
-
+    private static HashSet<Bonus> bonuses = Bonus.getBonuses();
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
-    private static final double SPEED = 1.5;
+    private double speed = 1.5;
 
     // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
         initAnimations();
+    }
+
+    public void increaseSpeed() {
+        speed += 0.0075;
     }
 
     private void initAnimations() {
@@ -38,14 +43,15 @@ public class Player extends Creature {
             @Override
             public void run() {
                 updateBlock();
+                checkBonuses();
                 if (getSide() == Side.TOP && topIsClear()) {
-                    y = getY() - SPEED;
+                    y = getY() - speed;
                 } else if (getSide() == Side.BOTTOM && bottomIsClear()) {
-                    y = getY() + SPEED;
+                    y = getY() + speed;
                 } else if (getSide() == Side.LEFT && leftIsClear()) {
-                    x = getX() - SPEED;
+                    x = getX() - speed;
                 } else if (getSide() == Side.RIGHT && rightIsClear()) {
-                    x = getX() + SPEED;
+                    x = getX() + speed;
                 }
                 Platform.runLater(new Runnable() {
                     @Override
@@ -82,6 +88,13 @@ public class Player extends Creature {
                 });
             }
         }, 0, 100);
+    }
+
+    private void checkBonuses() {
+        for (Bonus bonus : bonuses) {
+            if (bonus.intersects(getBoundsInLocal()))
+                bonus.activate(this);
+        }
     }
 
     public void setAnimationFront(){

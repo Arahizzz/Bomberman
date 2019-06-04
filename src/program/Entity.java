@@ -100,6 +100,10 @@ abstract public class Entity extends Rectangle {
     public ObservableList<Node> getChildren() {
         return children;
     }
+
+    public void setChildren(ObservableList<Node> children) {
+        this.children = children;
+    }
 }
 
 abstract class Creature extends Entity {

@@ -104,13 +104,6 @@ class StoneBrick extends GameBlock {
 
 
 class RedBrick extends GameBlock {
-    private static final int SPEED_BONUS = 0;
-    private static final int EXPLOSION_RANGE_BONUS = 1;
-    private static final int BOMB_AMOUNT_BONUS = 2;
-    private static final int HEART_BONUS = 3;// має менший шанс випасти
-    //ці бонуси робити окремо, бо вони мають випади один раз за гру (матимуть малий шанс дропу)
-    private static final int DETONATOR = 4; // бомби вибухають не по таймеру, за натиском кнопки гравцем
-    private static final int WALING_THROUGH_WALLS = 5; // гравець може ходити крізь блоки(трава та redbrick)
 
     private int bonusChance = 50;
     Random random = new Random();
@@ -126,11 +119,12 @@ class RedBrick extends GameBlock {
         if (MyRandom.randomPersantage(bonusChance)) {
 
             int value = random.nextInt(3);
+            Bonuses bonus = Bonuses.values()[value];
 
-           // if (value == SPEED_BONUS) return new SpeedBonus(this,this.size,null,null);
-          //  else if (value == EXPLOSION_RANGE_BONUS) return new ExplosionRangeBonus(this,this.size,null,null);
-           // else if (value == BOMB_AMOUNT_BONUS) return new BombAmountBonus(this,this.size,null,null);
-
+            if (bonus == Bonuses.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), null);
+            else if (bonus == Bonuses.EXPLOSION_RANGE_BONUS)
+                return new ExplosionRangeBonus(this, null, (int) getWidth(), null);
+            else if (bonus == Bonuses.BOMB_AMOUNT_BONUS) return new BombAmountBonus(this, null, (int) getWidth(), null);
         }
         return null;
 

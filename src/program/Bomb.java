@@ -15,7 +15,7 @@ import java.util.function.UnaryOperator;
 public class Bomb extends Entity {
     private static Image[] animation = new Image[3];
     private static Image[] flames = new Image[5];
-    private static int maxCount = 3;
+    private static int maxCount = 1;
     private static int currentCount = -1;
     private static int range = 1;
     private Bomb bomb = this;
@@ -50,6 +50,10 @@ public class Bomb extends Entity {
         range = range + 1;
     }
 
+    public static void incraseAmount() {
+        maxCount = maxCount + 1;
+    }
+
     public void explode(ObservableList<Node> children) {
         children.remove(this);
     }
@@ -73,16 +77,19 @@ public class Bomb extends Entity {
             UnaryOperator<Node> operator = new UnaryOperator<Node>() {
                 @Override
                 public Node apply(Node node) {
-                    if (node instanceof GameBlock && !(node instanceof GrassBlock)) {
+                    if (node instanceof GameBlock) {
                         GameBlock block = (GameBlock) node;
-                        if (damagedZone.contains(block)) {
-
-                            final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
-                                    (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
-
-                            blocks[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
-
-                            return grassBlock;
+                        if (block instanceof RedBrick) {
+                            if (damagedZone.contains(block)) {
+                                Bonus bonus = ((RedBrick) block).generateBonus();
+                                final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
+                                        (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
+                                blocks[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
+                                if (bonus != null) {
+                                    putBonus(bonus);
+                                }
+                                return grassBlock;
+                            }
                         }
                         return block;
                     }
@@ -90,6 +97,16 @@ public class Bomb extends Entity {
                 }
             };
             Platform.runLater(() -> children.replaceAll(operator));
+        }
+
+        public void putBonus(Bonus bonus) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    bonus.setChildren(children);
+                    children.add(bonus);
+                }
+            });
         }
 
         @Override
