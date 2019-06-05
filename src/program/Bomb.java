@@ -77,11 +77,10 @@ public class Bomb extends Entity {
             UnaryOperator<Node> operator = new UnaryOperator<Node>() {
                 @Override
                 public Node apply(Node node) {
-                    if (node instanceof GameBlock) {
-                        GameBlock block = (GameBlock) node;
-                        if (block instanceof RedBrick) {
+                    if (node instanceof RedBrick) {
+                        RedBrick block = (RedBrick) node;
                             if (damagedZone.contains(block)) {
-                                Bonus bonus = ((RedBrick) block).generateBonus();
+                                Bonus bonus = block.generateBonus();
                                 final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
                                         (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
                                 blocks[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
@@ -90,7 +89,6 @@ public class Bomb extends Entity {
                                 }
                                 return grassBlock;
                             }
-                        }
                         return block;
                     }
                     return node;
