@@ -18,7 +18,10 @@ public abstract class Bonus extends Entity {
         bonuses.add(this);
     }
 
-    abstract void activate(Player player);
+    void activate(Player player) {
+        Platform.runLater(() -> getChildren().remove(this));
+        bonuses.remove(this);
+    }
 
     public static HashSet<Bonus> getBonuses() {
         return bonuses;
@@ -34,7 +37,7 @@ class BombAmountBonus extends Bonus {
     @Override
     void activate(Player player) {
         Bomb.incraseAmount();
-        Platform.runLater(() -> getChildren().remove(this));
+        super.activate(player);
     }
 }
 
@@ -47,7 +50,7 @@ class ExplosionRangeBonus extends Bonus {
     @Override
     void activate(Player player) {
         Bomb.increaseRange();
-        Platform.runLater(() -> getChildren().remove(this));
+        super.activate(player);
     }
 }
 
@@ -61,7 +64,7 @@ class SpeedBonus extends Bonus {
     @Override
     void activate(Player player) {
         player.increaseSpeed();
-        Platform.runLater(() -> getChildren().remove(this));
+        super.activate(player);
     }
 }
 

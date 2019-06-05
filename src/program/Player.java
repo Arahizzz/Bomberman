@@ -19,6 +19,7 @@ public class Player extends Creature {
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
     private double speed = 1.5;
+    private static final double MAXSPEED = 3.0;
 
     // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
@@ -27,7 +28,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        speed += 0.0075;
+        speed = speed < MAXSPEED ? speed + 0.0125 : speed;
     }
 
     private void initAnimations() {
@@ -92,8 +93,10 @@ public class Player extends Creature {
 
     private void checkBonuses() {
         for (Bonus bonus : bonuses) {
-            if (bonus.intersects(getBoundsInLocal()))
+            if (bonus.intersects(getBoundsInLocal())) {
                 bonus.activate(this);
+                break;
+            }
         }
     }
 
