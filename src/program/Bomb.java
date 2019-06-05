@@ -80,13 +80,12 @@ public class Bomb extends Entity {
                     if (node instanceof RedBrick) {
                         RedBrick block = (RedBrick) node;
                             if (damagedZone.contains(block)) {
-                                Bonus bonus = block.generateBonus();
+                                Bonus bonus = block.generateBonus(children);
                                 final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
                                         (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
                                 blocks[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
-                                if (bonus != null) {
-                                    putBonus(bonus);
-                                }
+                                if (bonus != null)
+                                    Platform.runLater(() -> children.add(bonus));
                                 return grassBlock;
                             }
                         return block;
@@ -95,16 +94,6 @@ public class Bomb extends Entity {
                 }
             };
             Platform.runLater(() -> children.replaceAll(operator));
-        }
-
-        public void putBonus(Bonus bonus) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    bonus.setChildren(children);
-                    children.add(bonus);
-                }
-            });
         }
 
         @Override

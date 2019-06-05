@@ -1,7 +1,9 @@
 package program;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -114,17 +116,18 @@ class RedBrick extends GameBlock {
         setFill(new ImagePattern(image));
     }
 
-    public Bonus generateBonus() {
+    public Bonus generateBonus(ObservableList<Node> children) {
 
         if (MyRandom.randomPersantage(bonusChance)) {
 
             int value = random.nextInt(3);
             Bonuses bonus = Bonuses.values()[value];
 
-            if (bonus == Bonuses.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), null);
+            if (bonus == Bonuses.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), children);
             else if (bonus == Bonuses.EXPLOSION_RANGE_BONUS)
-                return new ExplosionRangeBonus(this, null, (int) getWidth(), null);
-            else if (bonus == Bonuses.BOMB_AMOUNT_BONUS) return new BombAmountBonus(this, null, (int) getWidth(), null);
+                return new ExplosionRangeBonus(this, null, (int) getWidth(), children);
+            else if (bonus == Bonuses.BOMB_AMOUNT_BONUS)
+                return new BombAmountBonus(this, null, (int) getWidth(), children);
         }
         return null;
 
