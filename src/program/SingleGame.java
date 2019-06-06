@@ -11,10 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -30,20 +27,22 @@ public class SingleGame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Single game");
-        VBox pane = new VBox();
+        HBox hPane = new HBox();
+        VBox vPane = new VBox();
         Group group = new Group();
-        pane.setAlignment(Pos.CENTER);
-        pane.getChildren().add(group);
-        pane.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        hPane.setAlignment(Pos.CENTER);
+        vPane.getChildren().add(group);
+        hPane.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         GamePlayGround gamePlayGround = new GamePlayGround(group.getChildren(),WIN_WIDTH,WIN_HEIGTH);
-        scene = new Scene(pane, WIN_WIDTH, WIN_HEIGTH);
+        scene = new Scene(hPane, WIN_WIDTH, WIN_HEIGTH);
         primaryStage.setScene(scene);
         gamePlayGround.drawGrid();
         gamePlayGround.initPlayer();
         initListeners(gamePlayGround);
 
         Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());
-        group.getChildren().add(characteristics);
+        characteristics.setAlignment(Pos.CENTER);
+        hPane.getChildren().addAll(characteristics, vPane);
 
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> System.exit(0));
