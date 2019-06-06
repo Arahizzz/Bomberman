@@ -15,16 +15,20 @@ public class Characteristics extends GridPane {
 
     public Characteristics(Player player){
         Image imageHeart = new Image("Powerups\\heart.png");
-        Label heartL = new Label(""+player.getLife());
+        Label heartL = new Label();
+        heartL.textProperty().bind(player.lifeProperty());
 
         Image imageFlame= new Image("Powerups\\FlamePowerup.png");
-        Label flameL = new Label("" + Bomb.getRange());
+        Label flameL = new Label();
+        flameL.textProperty().bind(Bomb.rangeProperty());
 
         Image imageBomb = new Image("Powerups\\BombPowerup.png");
-        Label bombL = new Label("" + Bomb.getMaxCount());
+        Label bombL = new Label();
+        bombL.textProperty().bind(Bomb.maxCountProperty());
 
         Image imageSpeed = new Image("Powerups\\SpeedPowerup.png");
-        Label speedL = new Label(""+player.getSpeed());
+        Label speedL = new Label();
+        speedL.textProperty().bind(player.speedProperty());
 
         this.getColumnConstraints().add(new ColumnConstraints(70));
         this.getColumnConstraints().add(new ColumnConstraints(70));

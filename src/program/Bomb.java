@@ -1,6 +1,9 @@
 package program;
 
 import javafx.application.Platform;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -15,9 +18,9 @@ import java.util.function.UnaryOperator;
 public class Bomb extends Entity {
     private static Image[] animation = new Image[3];
     private static Image[] flames = new Image[5];
-    private static int maxCount = 1;
+    private static final IntegerProperty maxCount = new SimpleIntegerProperty(1);
     private static int currentCount = -1;
-    private static int range = 1;
+    private static final IntegerProperty range = new SimpleIntegerProperty(1);
     private Bomb bomb = this;
 
     static {
@@ -30,7 +33,7 @@ public class Bomb extends Entity {
     }
 
     public static Bomb newBomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
-        if (!currentBlock.containsEntity() & currentCount < maxCount)
+        if (!currentBlock.containsEntity() & currentCount < getMaxCount())
             return new Bomb(currentBlock, blockArray, blockSize, children);
         else
             return null;
@@ -47,19 +50,27 @@ public class Bomb extends Entity {
     }
 
     public static void increaseRange() {
-        range = range + 1;
+        Platform.runLater(() -> range.setValue(range.get() + 1));
     }
 
     public static void incraseAmount() {
-        maxCount = maxCount + 1;
+        Platform.runLater(() -> maxCount.setValue(maxCount.get() + 1));
     }
 
     public static int getMaxCount() {
-        return maxCount;
+        return maxCount.get();
     }
 
     public static int getRange() {
-        return range;
+        return range.get();
+    }
+
+    public static StringBinding maxCountProperty() {
+        return maxCount.asString();
+    }
+
+    public static StringBinding rangeProperty() {
+        return range.asString();
     }
 
     public void explode(ObservableList<Node> children) {
@@ -119,7 +130,7 @@ public class Bomb extends Entity {
             GameBlock block = getCurrentBlock();
             damagedZone.add(block);
             //Top
-            for (int i = 0; i < range; i++) {
+            for (int i = 0; i < getRange(); i++) {
                 block = getTopBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -131,7 +142,7 @@ public class Bomb extends Entity {
             }
             //Left
             block = getCurrentBlock();
-            for (int i = 0; i < range; i++) {
+            for (int i = 0; i < getRange(); i++) {
                 block = getLeftBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -143,7 +154,7 @@ public class Bomb extends Entity {
             }
             //Right
             block = getCurrentBlock();
-            for (int i = 0; i < range; i++) {
+            for (int i = 0; i < getRange(); i++) {
                 block = getRightBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -155,7 +166,7 @@ public class Bomb extends Entity {
             }
             //Bottom
             block = getCurrentBlock();
-            for (int i = 0; i < range; i++) {
+            for (int i = 0; i < getRange(); i++) {
                 block = getBottomBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);

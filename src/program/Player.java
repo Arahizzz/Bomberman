@@ -1,6 +1,11 @@
 package program;
 
+import com.sun.javafx.sg.prism.web.NGWebView;
 import javafx.application.Platform;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -20,11 +25,19 @@ public class Player extends Creature {
     private static final int HEIGHT = 50;
 
     public double getSpeed() {
-        return speed;
+        return speed.get();
     }
 
-    private double speed = 1.5;
+    private DoubleProperty speed = new SimpleDoubleProperty(1.5);
     private static final double MAXSPEED = 3.0;
+
+    public StringBinding speedProperty() {
+        return speed.asString();
+    }
+
+    public void setSpeed(double value) {
+        Platform.runLater(() -> speed.setValue(value));
+    }
 
     // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
@@ -33,7 +46,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        speed = speed < MAXSPEED ? speed + 0.0125 : speed;
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.0125 : getSpeed());
     }
 
     private void initAnimations() {
@@ -51,13 +64,13 @@ public class Player extends Creature {
                 updateBlock();
                 checkBonuses();
                 if (getSide() == Side.TOP && topIsClear()) {
-                    y = getY() - speed;
+                    y = getY() - getSpeed();
                 } else if (getSide() == Side.BOTTOM && bottomIsClear()) {
-                    y = getY() + speed;
+                    y = getY() + getSpeed();
                 } else if (getSide() == Side.LEFT && leftIsClear()) {
-                    x = getX() - speed;
+                    x = getX() - getSpeed();
                 } else if (getSide() == Side.RIGHT && rightIsClear()) {
-                    x = getX() + speed;
+                    x = getX() + getSpeed();
                 }
                 Platform.runLater(new Runnable() {
                     @Override

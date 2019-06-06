@@ -1,6 +1,9 @@
 package program;
 
 import javafx.application.Platform;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
@@ -109,19 +112,19 @@ abstract public class Entity extends Rectangle {
 abstract class Creature extends Entity {
     private Side side = Side.NONE;
     private static HashSet<Creature> creatures = new HashSet<>();
-    private int life;
+    private IntegerProperty life = new SimpleIntegerProperty();
 
     public int getLife() {
-        return life;
+        return life.get();
     }
 
     public void setLife(int life) {
-        this.life = life;
+        Platform.runLater(() -> this.life.setValue(life));
     }
 
     public Creature(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int life) {
         super(width, height, currentBlock, blockArray, blockSize, children);
-        this.life = life;
+        this.life.setValue(life);
         creatures.add(this);
     }
 
@@ -143,8 +146,18 @@ abstract class Creature extends Entity {
     }
 
     public void decreaseLife() {
-        if (life-- == 0)
+        if (getLife() == 0)
             kill();
+        else
+            setLife(getLife() - 1);
+    }
+
+    public StringBinding lifeProperty() {
+        return life.asString();
+    }
+
+    public void increaseLife() {
+        setLife(getLife() + 1);
     }
 }
 
