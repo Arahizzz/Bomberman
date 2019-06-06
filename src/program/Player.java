@@ -2,6 +2,7 @@ package program;
 
 import com.sun.javafx.sg.prism.web.NGWebView;
 import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -34,8 +35,8 @@ public class Player extends Creature {
     private int currentCount = -1;
     private final IntegerProperty range = new SimpleIntegerProperty(1);
 
-    public StringBinding speedProperty() {
-        return speed.asString();
+    public DoubleProperty speedProperty() {
+        return speed;
     }
 
     public void setSpeed(double value) {

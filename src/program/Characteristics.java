@@ -1,11 +1,16 @@
 package program;
 
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+
+import java.text.DecimalFormat;
+
+import static java.lang.Math.PI;
 
 public class Characteristics extends GridPane {
 
@@ -28,7 +33,7 @@ public class Characteristics extends GridPane {
 
         Image imageSpeed = new Image("Powerups\\SpeedPowerup.png");
         Label speedL = new Label();
-        speedL.textProperty().bind(player.speedProperty());
+        speedL.textProperty().bind(Bindings.format("%.3f", player.speedProperty()));
 
         this.getColumnConstraints().add(new ColumnConstraints(70));
         this.getColumnConstraints().add(new ColumnConstraints(70));
