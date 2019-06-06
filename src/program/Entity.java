@@ -111,6 +111,14 @@ abstract class Creature extends Entity {
     private static HashSet<Creature> creatures = new HashSet<>();
     private int life;
 
+    public int getLife() {
+        return life;
+    }
+
+    public void setLife(int life) {
+        this.life = life;
+    }
+
     public Creature(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int life) {
         super(width, height, currentBlock, blockArray, blockSize, children);
         this.life = life;

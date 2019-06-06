@@ -41,6 +41,10 @@ public class SingleGame extends Application {
         gamePlayGround.drawGrid();
         gamePlayGround.initPlayer();
         initListeners(gamePlayGround);
+
+        Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());
+        group.getChildren().add(characteristics);
+
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> System.exit(0));
     }

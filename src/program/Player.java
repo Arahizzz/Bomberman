@@ -18,6 +18,11 @@ public class Player extends Creature {
     private static HashSet<Bonus> bonuses = Bonus.getBonuses();
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
+
+    public double getSpeed() {
+        return speed;
+    }
+
     private double speed = 1.5;
     private static final double MAXSPEED = 3.0;
 
