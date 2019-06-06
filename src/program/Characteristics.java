@@ -18,10 +18,10 @@ public class Characteristics extends GridPane {
         Label heartL = new Label(""+player.getLife());
 
         Image imageFlame= new Image("Powerups\\FlamePowerup.png");
-        Label flameL = new Label(""+player.getLife());
+        Label flameL = new Label("" + Bomb.getRange());
 
         Image imageBomb = new Image("Powerups\\BombPowerup.png");
-        Label bombL = new Label(""+player.getLife());
+        Label bombL = new Label("" + Bomb.getMaxCount());
 
         Image imageSpeed = new Image("Powerups\\SpeedPowerup.png");
         Label speedL = new Label(""+player.getSpeed());

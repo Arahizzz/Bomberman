@@ -54,6 +54,14 @@ public class Bomb extends Entity {
         maxCount = maxCount + 1;
     }
 
+    public static int getMaxCount() {
+        return maxCount;
+    }
+
+    public static int getRange() {
+        return range;
+    }
+
     public void explode(ObservableList<Node> children) {
         children.remove(this);
     }
