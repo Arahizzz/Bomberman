@@ -14,7 +14,7 @@ public class Characteristics extends GridPane {
 
 
     public Characteristics(Player player){
-        Image imageHeart = new Image("Powerups\\heart.png");
+        Image imageHeart = new Image("Powerups\\Heart.png");
         Label heartL = new Label();
         heartL.textProperty().bind(player.lifeProperty());
 
