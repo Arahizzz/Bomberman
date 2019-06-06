@@ -20,14 +20,16 @@ public class Enemy extends Creature {
     }
 
     private void initAnimations() {
-
         setAnimationFront();
-
     }
 
     public void setAnimationFront(){
         // javafx.scene.image.Image image = new Image("Enemy\\Front\\Creep_F_f00.png");
         setFill(new ImagePattern(Animation.getEnemyAnimationFront()));
+    }
+
+    private void startMovement() {
+
     }
 
     public void setAnimationBack(){

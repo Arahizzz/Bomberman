@@ -170,27 +170,6 @@ public class Player extends Creature {
         setFill(new ImagePattern(Animation.getPlayerAnimationLeft()));
     }
 
-    public void updateBlock() {
-        switch (getSide()) {
-            case TOP:
-                if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getTopBlock());
-                break;
-            case LEFT:
-                if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getLeftBlock());
-                break;
-            case RIGHT:
-                if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getRightBlock());
-                break;
-            case BOTTOM:
-                if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getBottomBlock());
-                break;
-        }
-    }
-
 
     public Bomb putBomb() {
         return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());

@@ -159,6 +159,27 @@ abstract class Creature extends Entity {
     public void increaseLife() {
         setLife(getLife() + 1);
     }
+
+    public void updateBlock() {
+        switch (getSide()) {
+            case TOP:
+                if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getTopBlock());
+                break;
+            case LEFT:
+                if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getLeftBlock());
+                break;
+            case RIGHT:
+                if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getRightBlock());
+                break;
+            case BOTTOM:
+                if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getBottomBlock());
+                break;
+        }
+    }
 }
 
 enum Side {
