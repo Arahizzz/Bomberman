@@ -17,7 +17,7 @@ public class GamePlayGround {
     private Random random = new Random();
     private Player player;
     private int grassPersantage = 40;
-    private int averageMobsNumber = 3; // кількість мобів або те число або +1
+    private int averageMobsNumber = 3; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
     int blocksPerMob = 130 * grassPersantage / 100 / averageMobsNumber;
     int perBlockChance = 100/blocksPerMob;
@@ -43,8 +43,9 @@ public class GamePlayGround {
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
     }
 
-    public void initMobs() {
+    public void initMobs(GrassBlock spawn) {
         System.out.println("Mob");
+        children.add(new Enemy(spawn,blockArray,blockSize,children));
     }
 
     public void initPlayer() {
@@ -213,7 +214,7 @@ public class GamePlayGround {
             if (countGrassBlocks > mobsCreated*blocksPerMob) {
 
                 if (MyRandom.randomPersantage(perBlockChance)) {
-                    initMobs();//spawnMob
+                    initMobs(grassBlock);//spawnMob//////////////////////////////////////////////////////////////
                     perBlockChance = 100/blocksPerMob;
                     mobsCreated++;
                 }else
