@@ -1,20 +1,16 @@
 package program;
 
-import com.sun.javafx.sg.prism.web.NGWebView;
 import javafx.application.Platform;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
-import jdk.nashorn.internal.ir.Block;
-import sun.awt.FwDispatcher;
 
-import java.awt.*;
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -85,7 +81,6 @@ public class Player extends Creature {
     }
 
     void startMovement() {
-        setActivated(true);
         {
             new Bomb(this, null, 0, null);
         }
@@ -143,6 +138,7 @@ public class Player extends Creature {
                 });
             }
         }, 0, 100);
+        new EnemyChecker().execute();
     }
 
     private void checkBonuses() {
@@ -174,5 +170,23 @@ public class Player extends Creature {
 
     public Bomb putBomb() {
         return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
+    }
+
+    class EnemyChecker extends SwingWorker<Void, Void> {
+        HashSet<Enemy> enemies = Enemy.getEnemies();
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            while (!isCancelled()) {
+                for (Enemy enemy : enemies) {
+                    if (intersects((enemy.getBoundsInParent()))) {
+                        decreaseLife();
+                        Thread.sleep(2500);
+                    }
+                }
+                Thread.sleep(100);
+            }
+            return null;
+        }
     }
 }

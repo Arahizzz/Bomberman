@@ -5,18 +5,21 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
 
+import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Enemy extends Creature {
 
+    private static HashSet<Enemy> enemies = new HashSet<>();
     private static double speed = 1.5;
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
-
+    private boolean activated = false;
 
     Enemy(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {//Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
+        enemies.add(this);
         initAnimations();
     }
 
@@ -132,4 +135,48 @@ public class Enemy extends Creature {
         setFill(new ImagePattern(Animation.getEnemyAnimationLeft()));
     }
 
+    @Override
+    public void kill() {
+        enemies.remove(this);
+        super.kill();
+    }
+
+    public static void updateMobs() {
+        for (Enemy enemy : enemies) {
+            enemy.checkIfFree();
+        }
+    }
+
+    public void checkIfFree() {
+        if (!activated) {
+            freeMob();
+        }
+    }
+
+    void freeMob() {
+        if (getTopBlock().isWalkAllowed())
+            setSide(Side.TOP);
+        else if (getBottomBlock().isWalkAllowed())
+            setSide(Side.BOTTOM);
+        else if (getLeftBlock().isWalkAllowed())
+            setSide(Side.LEFT);
+        else if (getRightBlock().isWalkAllowed())
+            setSide(Side.RIGHT);
+        if (getSide() != Side.NONE) {
+            startMovement();
+            activated = true;
+        }
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+    public static HashSet<Enemy> getEnemies() {
+        return enemies;
+    }
 }

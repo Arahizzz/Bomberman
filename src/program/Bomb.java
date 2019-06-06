@@ -1,9 +1,6 @@
 package program;
 
 import javafx.application.Platform;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -11,7 +8,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.function.UnaryOperator;
 
 public class Bomb extends Entity {
@@ -91,7 +89,7 @@ public class Bomb extends Entity {
                 @Override
                 public void run() {
                     children.replaceAll(operator);
-                    Creature.updateMobs();
+                    Enemy.updateMobs();
                 }
             });
         }

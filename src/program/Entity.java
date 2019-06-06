@@ -113,7 +113,6 @@ abstract class Creature extends Entity {
     private Side side = Side.NONE;
     private static HashSet<Creature> creatures = new HashSet<>();
     private IntegerProperty life = new SimpleIntegerProperty();
-    private boolean activated = false;
 
     public int getLife() {
         return life.get();
@@ -195,41 +194,6 @@ abstract class Creature extends Entity {
             default:
                 return false;
         }
-    }
-
-    public static void updateMobs() {
-        for (Creature creature : getCreatures()) {
-            creature.checkIfFree();
-        }
-    }
-
-    public void checkIfFree() {
-        if (!activated) {
-            freeMob();
-        }
-    }
-
-    void freeMob() {
-        if (getTopBlock().isWalkAllowed())
-            setSide(Side.TOP);
-        else if (getBottomBlock().isWalkAllowed())
-            setSide(Side.BOTTOM);
-        else if (getLeftBlock().isWalkAllowed())
-            setSide(Side.LEFT);
-        else if (getRightBlock().isWalkAllowed())
-            setSide(Side.RIGHT);
-        if (getSide() != Side.NONE) {
-            startMovement();
-            activated = true;
-        }
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
     }
 
     abstract void startMovement();
