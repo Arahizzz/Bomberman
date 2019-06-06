@@ -45,7 +45,7 @@ public class Player extends Creature {
 
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
-        initAnimations();
+        startMovement();
     }
 
     public int getMaxCount() {
@@ -84,7 +84,8 @@ public class Player extends Creature {
         setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.0125 : getSpeed());
     }
 
-    private void initAnimations() {
+    void startMovement() {
+        setActivated(true);
         {
             new Bomb(this, null, 0, null);
         }

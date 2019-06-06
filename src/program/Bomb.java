@@ -87,7 +87,13 @@ public class Bomb extends Entity {
                     return node;
                 }
             };
-            Platform.runLater(() -> children.replaceAll(operator));
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    children.replaceAll(operator);
+                    Creature.updateMobs();
+                }
+            });
         }
 
         @Override

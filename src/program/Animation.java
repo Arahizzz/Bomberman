@@ -68,28 +68,28 @@ public class Animation {
     public static Image getEnemyAnimationBack(){
         Image image = enemyAnimationBack[currentEnemyBack];
         currentEnemyBack++;
-        if (currentEnemyBack ==8) currentEnemyBack =0;
+        if (currentEnemyBack == 6) currentEnemyBack = 0;
         return image;
     }
 
     public static Image getEnemyAnimationRight(){
         Image image = enemyAnimationRight[currentSideEnemyRight];
         currentSideEnemyRight++;
-        if (currentSideEnemyRight ==8) currentSideEnemyRight =0;
+        if (currentSideEnemyRight == 6) currentSideEnemyRight = 0;
         return image;
     }
 
     public static Image getEnemyAnimationFront(){
         Image image = enemyAnimationFront[currentEnemyFront];
         currentEnemyFront++;
-        if (currentEnemyFront ==8) currentEnemyFront =0;
+        if (currentEnemyFront == 6) currentEnemyFront = 0;
         return image;
     }
 
     public static Image getEnemyAnimationLeft() {
         Image image = enemyAnimationLeft[currentSideEnemyLeft];
         currentSideEnemyLeft++;
-        if (currentSideEnemyLeft == 8) currentSideEnemyLeft = 0;
+        if (currentSideEnemyLeft == 6) currentSideEnemyLeft = 0;
         return image;
     }
 
