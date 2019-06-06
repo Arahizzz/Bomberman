@@ -20,21 +20,19 @@ import javax.swing.*;
 
 public class SingleGame {
 
-    private static final int WIN_WIDTH = 1600;
-    private static final int WIN_HEIGTH = 900;
     Scene scene;
 
-    public Scene start() {
+    public Scene start(double winWidth, double winHeigth) {
         HBox hPane = new HBox();
         VBox vPane = new VBox();
         Group group = new Group();
         hPane.setAlignment(Pos.CENTER);
         vPane.getChildren().add(group);
         hPane.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        GamePlayGround gamePlayGround = new GamePlayGround(group.getChildren(),WIN_WIDTH,WIN_HEIGTH);
+        GamePlayGround gamePlayGround = new GamePlayGround(group.getChildren(), winWidth, winHeigth);
         gamePlayGround.drawGrid();
         gamePlayGround.initPlayer();
-        scene = new Scene(hPane, WIN_WIDTH, WIN_HEIGTH);
+        scene = new Scene(hPane, winWidth, winHeigth);
         initListeners(gamePlayGround);
 
         Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());

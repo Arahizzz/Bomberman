@@ -27,10 +27,11 @@ public class GamePlayGround {
     }
 
     ObservableList<Node> children;
-    GamePlayGround(ObservableList<Node> children,int WinWidth, int WinHeight) {
+
+    GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight) {
 this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
-        blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
+        blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
         generateBlocks(grassPersantage); //set grass persantage
         spawn = generateSpawnPoint();

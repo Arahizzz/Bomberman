@@ -13,6 +13,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         primaryStage.setTitle("Bomberman");
         primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setMaximized(true);
         ScreenController screenController = new ScreenController(primaryStage.getScene());
         screenController.addScreen("MainMenu", FXMLLoader.load(getClass().getResource("mainMenu.fxml")));
         primaryStage.show();

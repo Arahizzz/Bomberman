@@ -27,7 +27,7 @@ public class MainMenuController {
     private void singleButtonAction(ActionEvent event) {
         Stage stage = (Stage) single.getScene().getWindow();
         stage.setTitle("Single game");
-        stage.setScene(new SingleGame().start());
+        stage.setScene(new SingleGame().start(stage.getWidth(), stage.getHeight()));
         stage.centerOnScreen();
         stage.setOnCloseRequest((e) -> System.exit(0));
     }
