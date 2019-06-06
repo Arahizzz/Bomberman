@@ -146,7 +146,7 @@ abstract class Creature extends Entity {
     }
 
     public void decreaseLife() {
-        if (getLife() == 0)
+        if (getLife() == 1)
             kill();
         else
             setLife(getLife() - 1);
