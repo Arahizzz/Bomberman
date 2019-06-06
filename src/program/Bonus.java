@@ -36,7 +36,7 @@ class BombAmountBonus extends Bonus {
 
     @Override
     void activate(Player player) {
-        Bomb.incraseAmount();
+        player.increaseMaxCount();
         super.activate(player);
     }
 }
@@ -49,7 +49,7 @@ class ExplosionRangeBonus extends Bonus {
 
     @Override
     void activate(Player player) {
-        Bomb.increaseRange();
+        player.increaseRange();
         super.activate(player);
     }
 }

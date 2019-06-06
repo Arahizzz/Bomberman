@@ -12,16 +12,13 @@ import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
 import java.util.*;
-import java.util.Timer;
 import java.util.function.UnaryOperator;
 
 public class Bomb extends Entity {
     private static Image[] animation = new Image[3];
     private static Image[] flames = new Image[5];
-    private static final IntegerProperty maxCount = new SimpleIntegerProperty(1);
-    private static int currentCount = -1;
-    private static final IntegerProperty range = new SimpleIntegerProperty(1);
     private Bomb bomb = this;
+    private Player player;
 
     static {
         for (int i = 0; i < animation.length; i++) {
@@ -32,45 +29,23 @@ public class Bomb extends Entity {
         }
     }
 
-    public static Bomb newBomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
-        if (!currentBlock.containsEntity() & currentCount < getMaxCount())
-            return new Bomb(currentBlock, blockArray, blockSize, children);
+    public static Bomb newBomb(Player player, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
+        GameBlock currentBlock = player.getCurrentBlock();
+        if (!currentBlock.containsEntity() & player.getCurrentCount() < player.getMaxCount())
+            return new Bomb(player, blockArray, blockSize, children);
         else
             return null;
     }
 
-    public Bomb(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
-        super(30, 30, currentBlock, blockArray, blockSize, children);
+    public Bomb(Player player, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
+        super(30, 30, player.getCurrentBlock(), blockArray, blockSize, children);
         setFill(new ImagePattern(animation[0]));
-        currentCount++;
+        player.setCurrentCount(player.getCurrentCount() + 1);
+        this.player = player;
     }
 
     public void start(ObservableList<Node> children) {
         new BombHandler(children).execute();
-    }
-
-    public static void increaseRange() {
-        Platform.runLater(() -> range.setValue(range.get() + 1));
-    }
-
-    public static void incraseAmount() {
-        Platform.runLater(() -> maxCount.setValue(maxCount.get() + 1));
-    }
-
-    public static int getMaxCount() {
-        return maxCount.get();
-    }
-
-    public static int getRange() {
-        return range.get();
-    }
-
-    public static StringBinding maxCountProperty() {
-        return maxCount.asString();
-    }
-
-    public static StringBinding rangeProperty() {
-        return range.asString();
     }
 
     public void explode(ObservableList<Node> children) {
@@ -130,7 +105,7 @@ public class Bomb extends Entity {
             GameBlock block = getCurrentBlock();
             damagedZone.add(block);
             //Top
-            for (int i = 0; i < getRange(); i++) {
+            for (int i = 0; i < player.getRange(); i++) {
                 block = getTopBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -142,7 +117,7 @@ public class Bomb extends Entity {
             }
             //Left
             block = getCurrentBlock();
-            for (int i = 0; i < getRange(); i++) {
+            for (int i = 0; i < player.getRange(); i++) {
                 block = getLeftBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -154,7 +129,7 @@ public class Bomb extends Entity {
             }
             //Right
             block = getCurrentBlock();
-            for (int i = 0; i < getRange(); i++) {
+            for (int i = 0; i < player.getRange(); i++) {
                 block = getRightBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -166,7 +141,7 @@ public class Bomb extends Entity {
             }
             //Bottom
             block = getCurrentBlock();
-            for (int i = 0; i < getRange(); i++) {
+            for (int i = 0; i < player.getRange(); i++) {
                 block = getBottomBlock(block);
                 if (block.isBreakable()) {
                     damagedZone.add(block);
@@ -184,7 +159,7 @@ public class Bomb extends Entity {
             protected Void doInBackground() throws Exception {
                 LinkedList<Node> images = new LinkedList<>();
                 Platform.runLater(() -> children.remove(bomb));
-                currentCount--;
+                player.setCurrentCount(player.getCurrentCount() - 1);
                 getCurrentBlock().setContainsEntity(false);
                 for (int i = 0; i < flames.length; i++) {
                     for (GameBlock block : damagedZone) {

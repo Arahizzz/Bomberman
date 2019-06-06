@@ -3,9 +3,7 @@ package program;
 import com.sun.javafx.sg.prism.web.NGWebView;
 import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -13,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import jdk.nashorn.internal.ir.Block;
+import sun.awt.FwDispatcher;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -31,6 +30,10 @@ public class Player extends Creature {
     private DoubleProperty speed = new SimpleDoubleProperty(1.5);
     private static final double MAXSPEED = 3.0;
 
+    private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
+    private int currentCount = -1;
+    private final IntegerProperty range = new SimpleIntegerProperty(1);
+
     public StringBinding speedProperty() {
         return speed.asString();
     }
@@ -45,13 +48,45 @@ public class Player extends Creature {
         initAnimations();
     }
 
+    public int getMaxCount() {
+        return maxCount.get();
+    }
+
+    public StringBinding maxCountProperty() {
+        return maxCount.asString();
+    }
+
+    public int getRange() {
+        return range.get();
+    }
+
+    public StringBinding rangeProperty() {
+        return range.asString();
+    }
+
+    public int getCurrentCount() {
+        return currentCount;
+    }
+
+    public void setCurrentCount(int currentCount) {
+        this.currentCount = currentCount;
+    }
+
+    public void increaseRange() {
+        Platform.runLater(() -> range.setValue(range.get() + 1));
+    }
+
+    public void increaseMaxCount() {
+        Platform.runLater(() -> maxCount.setValue(maxCount.get() + 1));
+    }
+
     public void increaseSpeed() {
         setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.0125 : getSpeed());
     }
 
     private void initAnimations() {
         {
-            new Bomb(getCurrentBlock(), null, 0, null);
+            new Bomb(this, null, 0, null);
         }
         setAnimationFront();
         Timer movement = new Timer();
@@ -156,7 +191,8 @@ public class Player extends Creature {
         }
     }
 
+
     public Bomb putBomb() {
-        return Bomb.newBomb(getCurrentBlock(), getBlockArray(), getBlockSize(), getChildren());
+        return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
     }
 }
