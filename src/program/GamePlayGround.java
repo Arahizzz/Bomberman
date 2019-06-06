@@ -45,7 +45,6 @@ public class GamePlayGround {
     }
 
     public void initMobs(GrassBlock spawn) {
-        System.out.println("Mob");
         Platform.runLater(() -> children.add(new Enemy(spawn, blockArray, blockSize, children)));
     }
 
