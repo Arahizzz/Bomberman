@@ -1,5 +1,6 @@
 package program;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
@@ -45,7 +46,7 @@ public class GamePlayGround {
 
     public void initMobs(GrassBlock spawn) {
         System.out.println("Mob");
-        children.add(new Enemy(spawn,blockArray,blockSize,children));
+        Platform.runLater(() -> children.add(new Enemy(spawn, blockArray, blockSize, children)));
     }
 
     public void initPlayer() {
