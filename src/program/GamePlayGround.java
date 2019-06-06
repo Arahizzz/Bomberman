@@ -16,7 +16,12 @@ public class GamePlayGround {
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
-    private int grassPersantage=40;
+    private int grassPersantage = 40;
+    private int averageMobsNumber = 3; // кількість мобів або те число або +1
+    private int countGrassBlocks = 0;
+    int blocksPerMob = 130 * grassPersantage / 100 / averageMobsNumber;
+    int perBlockChance = 100/blocksPerMob;
+    int mobsCreated =0;
 
     public Player getPlayer() {
         return player;
@@ -27,8 +32,9 @@ public class GamePlayGround {
     }
 
     ObservableList<Node> children;
-    GamePlayGround(ObservableList<Node> children,int WinWidth, int WinHeight) {
-this.children=children;
+
+    GamePlayGround(ObservableList<Node> children, int WinWidth, int WinHeight) {
+        this.children = children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
@@ -37,7 +43,11 @@ this.children=children;
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
     }
 
-    public void initPlayer(){
+    public void initMobs() {
+        System.out.println("Mob");
+    }
+
+    public void initPlayer() {
         player = new Player(spawn, blockArray, blockSize, children);
         children.add(player);
     }
@@ -126,7 +136,7 @@ this.children=children;
                     blockArray[row - 1][column] = new GrassBlock(column * blockSize, (row - 1) * blockSize, blockSize, blockSize, row - 1, column);
                     blockArray[row + 1][column] = new GrassBlock(column * blockSize, (row + 1) * blockSize, blockSize, blockSize, row + 1, column);
                     return;
-                }else {
+                } else {
                     //задаємо блок в центр поля
                     if (column == 1)
                         blockArray[row][column + 1] = new GrassBlock((column + 1) * blockSize, row * blockSize, blockSize, blockSize, row, column + 1);
@@ -170,7 +180,7 @@ this.children=children;
         }
 
         blockArray[row][column] = new GrassBlock(column * blockSize, row * blockSize, blockSize, blockSize, row, column);
-      //spawn point
+        //spawn point
         return blockArray[row][column];
     }
 
@@ -196,11 +206,25 @@ this.children=children;
     //persantage of grass
 
     private GameBlock randomBrickOrGrass(int grassPersantage, int i, int j) {
-        if (MyRandom.randomPersantage(grassPersantage))
-            return new GrassBlock(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
+        if (MyRandom.randomPersantage(grassPersantage)) {
+            GrassBlock grassBlock = new GrassBlock(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
+            countGrassBlocks++;
 
+            if (countGrassBlocks > mobsCreated*blocksPerMob) {
+
+                if (MyRandom.randomPersantage(perBlockChance)) {
+                    initMobs();//spawnMob
+                    perBlockChance = 100/blocksPerMob;
+                    mobsCreated++;
+                }else
+                    perBlockChance+=100/blocksPerMob;
+
+            }
+            return grassBlock;
+        }
         return new RedBrick(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
     }
+
     private void initStoneBlocks() {
         //задаємо бетонну рамку
         // верх і низ

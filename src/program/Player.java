@@ -43,7 +43,6 @@ public class Player extends Creature {
         Platform.runLater(() -> speed.setValue(value));
     }
 
-    // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
         initAnimations();
