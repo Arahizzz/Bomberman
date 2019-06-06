@@ -18,15 +18,13 @@ import javafx.stage.Stage;
 
 import javax.swing.*;
 
-public class SingleGame extends Application {
+public class SingleGame {
 
     private static final int WIN_WIDTH = 1600;
     private static final int WIN_HEIGTH = 900;
     Scene scene;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("Single game");
+    public Scene start() {
         HBox hPane = new HBox();
         VBox vPane = new VBox();
         Group group = new Group();
@@ -34,18 +32,15 @@ public class SingleGame extends Application {
         vPane.getChildren().add(group);
         hPane.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         GamePlayGround gamePlayGround = new GamePlayGround(group.getChildren(),WIN_WIDTH,WIN_HEIGTH);
-        scene = new Scene(hPane, WIN_WIDTH, WIN_HEIGTH);
-        primaryStage.setScene(scene);
         gamePlayGround.drawGrid();
         gamePlayGround.initPlayer();
+        scene = new Scene(hPane, WIN_WIDTH, WIN_HEIGTH);
         initListeners(gamePlayGround);
 
         Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());
         characteristics.setAlignment(Pos.CENTER);
         hPane.getChildren().addAll(characteristics, vPane);
-
-        primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> System.exit(0));
+        return scene;
     }
 
     private void initListeners(GamePlayGround gamePlayGround) {
