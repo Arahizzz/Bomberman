@@ -19,7 +19,7 @@ public class GamePlayGround {
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
-    private int grassPersantage = 40;
+    private int grassPersantage = 90;
     private int averageMobsNumber = 3; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
     int blocksPerMob = 130 * grassPersantage / 100 / averageMobsNumber;
@@ -45,11 +45,13 @@ public class GamePlayGround {
         generateBlocks(grassPersantage); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
-        deleteMobsNearPlayer(spawn);
+        initMobs();
     }
 
     public void initMobs(GrassBlock spawn) {
+
         Platform.runLater(() -> children.add(new Enemy(spawn, blockArray, blockSize, children)));
+
     }
 
     public void initPlayer() {
@@ -57,106 +59,46 @@ public class GamePlayGround {
         children.add(player);
     }
 
-    private void deleteMobsNearPlayer(GameBlock spawn) {
+    private boolean checkMobNearPlayer(GameBlock mobSpawn) {
         int rangeCheck = 3; // кількість блоків вверх вниз вправо вліво від гравця без мобів (спавн не включно)
-
-        initMobs((GrassBlock) blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - 2]);
-        mobBlocks.add((GrassBlock) blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - 2]);
-        System.out.println(spawn.getHorizontalIndex() + " " + spawn.getVerticalIndex());
 
         //spawn
 
-        for (int j = 0; j < mobBlocks.size(); j++) {
-            if (mobBlocks.get(j) == spawn) {
-
-                for (Enemy enemy : Enemy.getEnemies()) {
-                    if (enemy.getCurrentBlock() == mobBlocks.get(j))
-                        Platform.runLater(() -> children.remove(enemy));
-                        Enemy.getEnemies().remove(enemy);
-                        Creature.getCreatures().remove(enemy);
-                }
-
-            }
-
-        }
+        if (mobSpawn==spawn) return false;
 
         //left
         for (int i = 1; i < rangeCheck + 1; i++) {
+
             if (!blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - i].isWalkAllowed())
                 break;
-
-            else
-                for (int j = 0; j < mobBlocks.size(); j++)
-                    if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - i] == mobBlocks.get(j)) {
-                        System.out.println("enemy on block " + mobBlocks.get(j).getVerticalIndex() + " " + mobBlocks.get(j).getHorizontalIndex());
-                        for (Enemy enemy : Enemy.getEnemies()) {
-                            System.out.println("inside");
-                            if (enemy.getCurrentBlock() == mobBlocks.get(j)) {
-                                System.out.println("Mob Near Player left");
-                                Platform.runLater(() -> children.remove(enemy));
-                                Enemy.getEnemies().remove(enemy);
-                                Creature.getCreatures().remove(enemy);
-                            }
-                        }
-                    }
+            if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - i]==mobSpawn)
+                return false;
         }
 
         //right
         for (int i = 1; i < 4; i++) {
             if (!blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i].isWalkAllowed())
                 break;
-
-            else
-                for (int j = 0; j < mobBlocks.size(); j++)
-                    if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i] == mobBlocks.get(j)) {
-                        System.out.println("Mob Near Player right");
-                        for (Enemy enemy : Enemy.getEnemies()) {
-                            if (enemy.getCurrentBlock() == mobBlocks.get(j))
-                                Platform.runLater(() -> children.remove(enemy));
-                                Enemy.getEnemies().remove(enemy);
-                                Creature.getCreatures().remove(enemy);
-                        }
-                    }
+            if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i] == mobSpawn)
+                     return false;
         }
 
         //top
         for (int i = 1; i < 4; i++) {
             if (!blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()].isWalkAllowed())
                 break;
-
-            else
-                for (int j = 0; j < mobBlocks.size(); j++)
-                    if (blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()] == mobBlocks.get(j)) {
-                        for (Enemy enemy : Enemy.getEnemies()) {
-                            if (enemy.getCurrentBlock() == mobBlocks.get(j))
-                                Platform.runLater(() -> children.remove(enemy));
-                                Enemy.getEnemies().remove(enemy);
-                                Creature.getCreatures().remove(enemy);
-                        }
-
-                        System.out.println("Mob Near Player top");
-                    }
+            if (blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()] == mobSpawn)
+                return false;
         }
 
         //bottom
         for (int i = 1; i < 4; i++) {
             if (!blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()].isWalkAllowed())
                 break;
-
-            else
-                for (int j = 0; j < mobBlocks.size(); j++)
-                    if (blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()] == mobBlocks.get(j)) {
-                        System.out.println("Mob Near Player bottom");
-                        for (Enemy enemy : Enemy.getEnemies()) {
-                            if (enemy.getCurrentBlock() == mobBlocks.get(j))
-                                Platform.runLater(() -> children.remove(enemy));
-                                Enemy.getEnemies().remove(enemy);
-                                Creature.getCreatures().remove(enemy);
-                        }
-                    }
+            if (blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()] == mobSpawn)
+                return false;
         }
-
-
+        return true;
     }
 
 
@@ -311,24 +253,39 @@ public class GamePlayGround {
         }
 
     }
+
+    private void initMobs() {
+
+        for (GameBlock[] gameBlock : blockArray) {
+            for (GameBlock gameBlock2 : gameBlock) {
+
+
+                if (gameBlock2.walkAllowed) {
+
+                    countGrassBlocks++;
+
+                    if (countGrassBlocks > mobsCreated * blocksPerMob) {
+
+                        if (MyRandom.randomPersantage(perBlockChance)&& checkMobNearPlayer(gameBlock2)) {
+                            initMobs((GrassBlock) gameBlock2);//spawnMob//////////////////////////////////////////////////////////////
+                            mobBlocks.add((GrassBlock) gameBlock2);
+                            perBlockChance = 100 / blocksPerMob;
+                            mobsCreated++;
+                        } else
+                            perBlockChance += 100 / blocksPerMob;
+
+                    }
+                }
+            }
+        }
+    }
+
     //persantage of grass
 
     private GameBlock randomBrickOrGrass(int grassPersantage, int i, int j) {
         if (MyRandom.randomPersantage(grassPersantage)) {
             GrassBlock grassBlock = new GrassBlock(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
-            countGrassBlocks++;
 
-            if (countGrassBlocks > mobsCreated * blocksPerMob) {
-
-                if (MyRandom.randomPersantage(perBlockChance)) {
-                    initMobs(grassBlock);//spawnMob//////////////////////////////////////////////////////////////
-                    mobBlocks.add(grassBlock);
-                    perBlockChance = 100 / blocksPerMob;
-                    mobsCreated++;
-                } else
-                    perBlockChance += 100 / blocksPerMob;
-
-            }
             return grassBlock;
         }
         return new RedBrick(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
