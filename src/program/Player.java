@@ -77,7 +77,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.0125 : getSpeed());
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.025 : getSpeed());
     }
 
     void startMovement() {
