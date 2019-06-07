@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -49,9 +48,10 @@ public class GamePlayGround {
     }
 
     public void initMobs(GrassBlock spawn) {
-
-        Platform.runLater(() -> children.add(new Enemy(spawn, blockArray, blockSize, children)));
-
+        Platform.runLater(() -> {
+            final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
+            children.add(enemy);
+        });
     }
 
     public void initPlayer() {
