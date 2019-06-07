@@ -7,11 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-import java.awt.*;
 import java.util.Random;
 
 abstract public class GameBlock extends Rectangle {
@@ -91,6 +89,9 @@ abstract public class GameBlock extends Rectangle {
         this.containsEntity = containsEntity;
     }
 
+    public boolean fullyContains(Bounds bounds) {
+        return contains(new Point2D(bounds.getMinX(), bounds.getMinY())) && contains(new Point2D(bounds.getMaxX(), bounds.getMaxY()));
+    }
 
 }
 

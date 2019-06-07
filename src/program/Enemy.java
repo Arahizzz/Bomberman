@@ -16,6 +16,7 @@ public class Enemy extends Creature {
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
     private boolean activated = false;
+    private static double turnProbability = 0.05;
 
     Enemy(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {//Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
@@ -52,16 +53,16 @@ public class Enemy extends Creature {
             @Override
             public void run() {
                 switch (getSide()) {
-                    case TOP:
+                    case NORTH:
                         Platform.runLater(() -> setAnimationBack());
                         break;
-                    case BOTTOM:
+                    case SOUTH:
                         Platform.runLater(() -> setAnimationFront());
                         break;
-                    case RIGHT:
+                    case EAST:
                         Platform.runLater(() -> setAnimationRight());
                         break;
-                    case LEFT:
+                    case WEST:
                         Platform.runLater(() -> setAnimationLeft());
                         break;
                 }
@@ -71,7 +72,7 @@ public class Enemy extends Creature {
 
     private void moveForward() {
         switch (getSide()) {
-            case TOP:
+            case NORTH:
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -79,7 +80,7 @@ public class Enemy extends Creature {
                     }
                 });
                 break;
-            case BOTTOM:
+            case SOUTH:
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -87,7 +88,7 @@ public class Enemy extends Creature {
                     }
                 });
                 break;
-            case RIGHT:
+            case EAST:
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -95,7 +96,7 @@ public class Enemy extends Creature {
                     }
                 });
                 break;
-            case LEFT:
+            case WEST:
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -104,23 +105,11 @@ public class Enemy extends Creature {
                 });
                 break;
         }
-    }
 
-    private void turnBack() {
-        switch (getSide()) {
-            case LEFT:
-                setSide(Side.RIGHT);
-                break;
-            case RIGHT:
-                setSide(Side.LEFT);
-                break;
-            case BOTTOM:
-                setSide(Side.TOP);
-                break;
-            case TOP:
-                setSide(Side.BOTTOM);
-                break;
-        }
+        if (leftIsClear() && RandomBoolean.get(turnProbability))
+            turnLeft();
+        else if (rightIsClear() && RandomBoolean.get(turnProbability))
+            turnRight();
     }
 
     public void setAnimationBack(){
@@ -155,18 +144,132 @@ public class Enemy extends Creature {
 
     void freeMob() {
         if (getTopBlock().isWalkAllowed())
-            setSide(Side.TOP);
+            setSide(Side.NORTH);
         else if (getBottomBlock().isWalkAllowed())
-            setSide(Side.BOTTOM);
+            setSide(Side.SOUTH);
         else if (getLeftBlock().isWalkAllowed())
-            setSide(Side.LEFT);
+            setSide(Side.WEST);
         else if (getRightBlock().isWalkAllowed())
-            setSide(Side.RIGHT);
+            setSide(Side.EAST);
         if (getSide() != Side.NONE) {
             startMovement();
             activated = true;
         }
     }
+
+    public boolean frontIsClear() {
+        switch (getSide()) {
+            case WEST:
+                return getLeftBlock().isWalkAllowed() || getX() > getCurrentBlock().getX() + 5;
+            case EAST:
+                return getRightBlock().isWalkAllowed() || getX() < getCurrentBlock().getX() + getWidth() - 5;
+            case SOUTH:
+                return getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < getCurrentBlock().getY() + getHeight() - 2;
+            case NORTH:
+                return getTopBlock().isWalkAllowed() || getY() > getCurrentBlock().getY() + 5;
+            default:
+                return false;
+        }
+    }
+
+    public boolean leftIsClear() {
+        if (getCurrentBlock().fullyContains(getBoundsInLocal())) {
+            switch (getSide()) {
+                case NORTH:
+                    return getLeftBlock().isWalkAllowed();
+                case SOUTH:
+                    return getRightBlock().isWalkAllowed();
+                case WEST:
+                    return getBottomBlock().isWalkAllowed();
+                case EAST:
+                    return getTopBlock().isWalkAllowed();
+            }
+        }
+        return false;
+    }
+
+    public boolean rightIsClear() {
+        if (getCurrentBlock().fullyContains(getBoundsInLocal())) {
+            switch (getSide()) {
+                case NORTH:
+                    return getRightBlock().isWalkAllowed();
+                case SOUTH:
+                    return getLeftBlock().isWalkAllowed();
+                case WEST:
+                    return getTopBlock().isWalkAllowed();
+                case EAST:
+                    return getBottomBlock().isWalkAllowed();
+            }
+        }
+        return false;
+    }
+
+    public boolean backIsClear() {
+        switch (getSide()) {
+            case NORTH:
+                return getBottomBlock().isWalkAllowed();
+            case SOUTH:
+                return getTopBlock().isWalkAllowed();
+            case WEST:
+                return getRightBlock().isWalkAllowed();
+            case EAST:
+                return getLeftBlock().isWalkAllowed();
+            default:
+                return false;
+        }
+    }
+
+    public void turnBack() {
+        switch (getSide()) {
+            case WEST:
+                setSide(Side.EAST);
+                break;
+            case EAST:
+                setSide(Side.WEST);
+                break;
+            case SOUTH:
+                setSide(Side.NORTH);
+                break;
+            case NORTH:
+                setSide(Side.SOUTH);
+                break;
+        }
+    }
+
+    public void turnLeft() {
+        switch (getSide()) {
+            case WEST:
+                setSide(Side.SOUTH);
+                break;
+            case EAST:
+                setSide(Side.NORTH);
+                break;
+            case SOUTH:
+                setSide(Side.EAST);
+                break;
+            case NORTH:
+                setSide(Side.WEST);
+                break;
+        }
+    }
+
+    public void turnRight() {
+        switch (getSide()) {
+            case WEST:
+                setSide(Side.NORTH);
+                break;
+            case EAST:
+                setSide(Side.SOUTH);
+                break;
+            case SOUTH:
+                setSide(Side.WEST);
+                break;
+            case NORTH:
+                setSide(Side.EAST);
+                break;
+        }
+    }
+
 
     public boolean isActivated() {
         return activated;

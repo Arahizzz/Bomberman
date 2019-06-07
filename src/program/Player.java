@@ -94,13 +94,13 @@ public class Player extends Creature {
             public void run() {
                 updateBlock();
                 checkBonuses();
-                if (getSide() == Side.TOP && topIsClear()) {
+                if (getSide() == Side.NORTH && northIsClear()) {
                     y = getY() - getSpeed();
-                } else if (getSide() == Side.BOTTOM && bottomIsClear()) {
+                } else if (getSide() == Side.SOUTH && southIsClear()) {
                     y = getY() + getSpeed();
-                } else if (getSide() == Side.LEFT && leftIsClear()) {
+                } else if (getSide() == Side.WEST && westIsClear()) {
                     x = getX() - getSpeed();
-                } else if (getSide() == Side.RIGHT && rightIsClear()) {
+                } else if (getSide() == Side.EAST && eastIsClear()) {
                     x = getX() + getSpeed();
                 }
                 Platform.runLater(new Runnable() {
@@ -121,16 +121,16 @@ public class Player extends Creature {
                     @Override
                     public void run() {
                         switch (getSide()) {
-                            case TOP:
+                            case NORTH:
                                 setAnimationBack();
                                 break;
-                            case BOTTOM:
+                            case SOUTH:
                                 setAnimationFront();
                                 break;
-                            case RIGHT:
+                            case EAST:
                                 setAnimationRight();
                                 break;
-                            case LEFT:
+                            case WEST:
                                 setAnimationLeft();
                                 break;
                         }
