@@ -122,12 +122,11 @@ class RedBrick extends GameBlock {
         if (MyRandom.randomPersantage(bonusChance)) {
 
             int value = random.nextInt(3);
-            Bonuses bonus = Bonuses.values()[value];
-
-            if (bonus == Bonuses.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), children);
-            else if (bonus == Bonuses.EXPLOSION_RANGE_BONUS)
+int bonus = random.nextInt(5);
+            if (bonus <= Bonus.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), children);
+            else if (bonus <= Bonus.EXPLOSION_RANGE_BONUS)
                 return new ExplosionRangeBonus(this, null, (int) getWidth(), children);
-            else if (bonus == Bonuses.BOMB_AMOUNT_BONUS)
+            else if (bonus <= Bonus.BOMB_AMOUNT_BONUS)
                 return new BombAmountBonus(this, null, (int) getWidth(), children);
         }
         return null;
