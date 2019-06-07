@@ -76,7 +76,7 @@ public class GamePlayGround {
         }
 
         //right
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < rangeCheck + 1; i++) {
             if (!blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i].isWalkAllowed())
                 break;
             if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i] == mobSpawn)
@@ -84,7 +84,7 @@ public class GamePlayGround {
         }
 
         //top
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < rangeCheck + 1; i++) {
             if (!blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()].isWalkAllowed())
                 break;
             if (blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()] == mobSpawn)
@@ -92,12 +92,79 @@ public class GamePlayGround {
         }
 
         //bottom
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < rangeCheck + 1; i++) {
             if (!blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()].isWalkAllowed())
                 break;
             if (blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()] == mobSpawn)
                 return false;
         }
+
+        ////////////////////////////DIAGONAL
+if (spawn.getHorizontalIndex()%2==0||spawn.getVerticalIndex()%2==0){
+
+    if (spawn.getHorizontalIndex()==1) {
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex()+i].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex()+i] == mobSpawn)
+                return false;
+        }
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex()+i].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex()+i] == mobSpawn)
+                return false;
+        }
+    }
+
+    if (spawn.getHorizontalIndex()==15) {
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex()-i].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex()-i] == mobSpawn)
+                return false;
+        }
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex()-i].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex()-i] == mobSpawn)
+                return false;
+        }
+    }
+
+    if (spawn.getVerticalIndex()==1) {
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex()+i][spawn.getHorizontalIndex()-1].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex()+i][spawn.getHorizontalIndex()-1] == mobSpawn)
+                return false;
+        }
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex()+i][spawn.getHorizontalIndex()+1].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex()+i][spawn.getHorizontalIndex()+1] == mobSpawn)
+                return false;
+        }
+    }
+
+    if (spawn.getVerticalIndex()==11) {
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex()-i][spawn.getHorizontalIndex()-1].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex()-i][spawn.getHorizontalIndex()-1] == mobSpawn)
+                return false;
+        }
+        for (int i = 0; i < rangeCheck+1; i++) {
+            if (!blockArray[spawn.getVerticalIndex()-i][spawn.getHorizontalIndex()+1].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex()-i][spawn.getHorizontalIndex()+1] == mobSpawn)
+                return false;
+        }
+    }
+
+}
+
+
         return true;
     }
 
