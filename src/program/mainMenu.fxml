@@ -11,16 +11,7 @@
 <?import javafx.scene.image.Image?>
 
 <GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="program.MainMenuController">
-   <StackPane id="pane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml" fx:controller="demo.Sample">
-      <children>
-      </children>
-   </StackPane>
-   <columnConstraints>
-      <ColumnConstraints />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints />
-   </rowConstraints>
+
    <children>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="150.0" prefWidth="400.0">
          <children>
@@ -28,7 +19,7 @@
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../Textures/Menu/One_Player_Hover.png" />
+                        <Image url="Menu\\One_Player_Hover.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -40,7 +31,7 @@
                <graphic>
                   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../Textures/Menu/Two_Players_Hover.png" />
+                        <Image url="Menu\\Two_Players_Hover.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -48,7 +39,14 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="exit" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Exit">
+            <Button fx:id="exit" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="">
+               <graphic>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="Menu\\exit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
