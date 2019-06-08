@@ -131,9 +131,12 @@ public class Enemy extends Creature {
     }
 
     public static void updateMobs() {
-        for (Enemy enemy : enemies) {
-            enemy.checkIfFree();
-        }
+        if (enemies.size() != 0) {
+            for (Enemy enemy : enemies) {
+                enemy.checkIfFree();
+            }
+        } else
+            Exit.setMobsKilled(true);
     }
 
     public void checkIfFree() {

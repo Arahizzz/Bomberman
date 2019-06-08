@@ -44,6 +44,7 @@ public class GamePlayGround {
         generateBlocks(grassPercentage); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
+        generateExit();
         initMobs();
     }
 
@@ -308,7 +309,7 @@ public class GamePlayGround {
         //рожева цегла непарні сплошні рядки
         for (int i = 1; i < blockNumberY - 1; i += 2) {
             for (int j = 1; j < blockNumberX - 1; j += 1) {
-                blockArray[i][j] = blockArray[i][j] = randomBrickOrGrass(grassPersantage, i, j);
+                blockArray[i][j] = randomBrickOrGrass(grassPersantage, i, j);
             }
         }
 
@@ -356,6 +357,18 @@ public class GamePlayGround {
             return grassBlock;
         }
         return new RedBrick(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
+    }
+
+    private void generateExit() {
+        int verticalIndex;
+        int horizontalIndex;
+        do {
+            verticalIndex = random.nextInt(blockNumberY - 1) + 1;
+            horizontalIndex = random.nextInt(blockNumberX - 1) + 1;
+        } while (verticalIndex % 2 == 0 & horizontalIndex % 2 == 0 & verticalIndex != spawn.getVerticalIndex() & horizontalIndex != spawn.getHorizontalIndex());
+        RedBrick brick = new RedBrick(blockSize * horizontalIndex, verticalIndex * blockSize, blockSize, blockSize, verticalIndex, horizontalIndex);
+        blockArray[verticalIndex][horizontalIndex] = brick;
+        brick.setExit(new Exit(brick, blockArray, blockSize, children));
     }
 
     private void initStoneBlocks() {

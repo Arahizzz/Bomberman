@@ -107,6 +107,7 @@ class StoneBrick extends GameBlock {
 
 
 class RedBrick extends GameBlock {
+    private Exit exit;
 
     private int bonusChance = 25;
     Random random = new Random();
@@ -118,6 +119,8 @@ class RedBrick extends GameBlock {
     }
 
     public Bonus generateBonus(ObservableList<Node> children) {
+        if (exit != null)
+            return exit;
 
         if (MyRandom.randomPersantage(bonusChance)) {
 
@@ -133,6 +136,9 @@ class RedBrick extends GameBlock {
 
     }
 
+    public void setExit(Exit exit) {
+        this.exit = exit;
+    }
 }
 
 class GrassBlock extends GameBlock {

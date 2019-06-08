@@ -77,3 +77,27 @@ class SpeedBonus extends Bonus {
     }
 }
 
+class Exit extends Bonus {
+    static boolean mobsKilled;
+
+    public Exit(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
+        super(currentBlock, blockArray, blockSize, children);
+        setFill(new ImagePattern(new Image("Blocks\\Portal.png")));
+        mobsKilled = false;
+    }
+
+    @Override
+    void activate(Player player) {
+        if (mobsKilled)
+            super.activate(player);
+    }
+
+    public static boolean isMobsKilled() {
+        return mobsKilled;
+    }
+
+    public static void setMobsKilled(boolean mobsKilled) {
+        Exit.mobsKilled = mobsKilled;
+    }
+}
+
