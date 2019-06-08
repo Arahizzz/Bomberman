@@ -51,52 +51,52 @@ abstract public class Entity extends Rectangle {
         this.blockSize = blockSize;
     }
 
-    GameBlock getBottomBlock() {
+    public GameBlock getBottomBlock() {
         return blockArray[currentBlock.getVerticalIndex() + 1][currentBlock.getHorizontalIndex()];
     }
 
-    GameBlock getRightBlock() {
+    public GameBlock getRightBlock() {
         return blockArray[currentBlock.getVerticalIndex()][currentBlock.getHorizontalIndex() + 1];
     }
 
-    GameBlock getLeftBlock() {
+    public GameBlock getLeftBlock() {
         return blockArray[currentBlock.getVerticalIndex()][currentBlock.getHorizontalIndex() - 1];
     }
 
-    GameBlock getTopBlock() {
+    public GameBlock getTopBlock() {
         return blockArray[currentBlock.getVerticalIndex() - 1][currentBlock.getHorizontalIndex()];
     }
 
-    GameBlock getBottomBlock(GameBlock block) {
+    public GameBlock getBottomBlock(GameBlock block) {
         return blockArray[block.getVerticalIndex() + 1][block.getHorizontalIndex()];
     }
 
-    GameBlock getRightBlock(GameBlock block) {
+    public GameBlock getRightBlock(GameBlock block) {
         return blockArray[block.getVerticalIndex()][block.getHorizontalIndex() + 1];
     }
 
-    GameBlock getLeftBlock(GameBlock block) {
+    public GameBlock getLeftBlock(GameBlock block) {
         return blockArray[block.getVerticalIndex()][block.getHorizontalIndex() - 1];
     }
 
-    GameBlock getTopBlock(GameBlock block) {
+    public GameBlock getTopBlock(GameBlock block) {
         return blockArray[block.getVerticalIndex() - 1][block.getHorizontalIndex()];
     }
 
 
-    public boolean topIsClear() {
+    public boolean northIsClear() {
         return currentBlock.isOnVerticalRail(this) && (getTopBlock().isWalkAllowed() || getY() > currentBlock.getY() + 5);
     }
 
-    public boolean bottomIsClear() {
+    public boolean southIsClear() {
         return currentBlock.isOnVerticalRail(this) && (getBottomBlock().isWalkAllowed() || getY() + getHeight() - 10 < currentBlock.getY() + getHeight() - 2);
     }
 
-    public boolean leftIsClear() {
+    public boolean westIsClear() {
         return currentBlock.isOnHorizontalRail(this) && (getLeftBlock().isWalkAllowed() || getX() > currentBlock.getX() + 5);
     }
 
-    public boolean rightIsClear() {
+    public boolean eastIsClear() {
         return currentBlock.isOnHorizontalRail(this) && (getRightBlock().isWalkAllowed() || getX() < currentBlock.getX() + getWidth() - 5);
     }
 
@@ -159,9 +159,32 @@ abstract class Creature extends Entity {
     public void increaseLife() {
         setLife(getLife() + 1);
     }
+
+    public void updateBlock() {
+        switch (getSide()) {
+            case NORTH:
+                if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getTopBlock());
+                break;
+            case WEST:
+                if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getLeftBlock());
+                break;
+            case EAST:
+                if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getRightBlock());
+                break;
+            case SOUTH:
+                if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
+                    setCurrentBlock(getBottomBlock());
+                break;
+        }
+    }
+
+    abstract void startMovement();
 }
 
 enum Side {
-    LEFT, RIGHT, TOP, BOTTOM, NONE,
+    WEST, EAST, NORTH, SOUTH, NONE,
     TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT
 }

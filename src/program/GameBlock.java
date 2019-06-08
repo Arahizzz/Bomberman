@@ -7,11 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-import java.awt.*;
 import java.util.Random;
 
 abstract public class GameBlock extends Rectangle {
@@ -91,6 +89,9 @@ abstract public class GameBlock extends Rectangle {
         this.containsEntity = containsEntity;
     }
 
+    public boolean fullyContains(Bounds bounds) {
+        return contains(new Point2D(bounds.getMinX(), bounds.getMinY())) && contains(new Point2D(bounds.getMaxX(), bounds.getMaxY()));
+    }
 
 }
 
@@ -107,7 +108,7 @@ class StoneBrick extends GameBlock {
 
 class RedBrick extends GameBlock {
 
-    private int bonusChance = 50;
+    private int bonusChance = 25;
     Random random = new Random();
     public RedBrick(int x, int y, int width, int height, int horizontalIndex, int verticalIndex) {
         super(x, y, width, height, true, false, horizontalIndex, verticalIndex);
@@ -121,12 +122,11 @@ class RedBrick extends GameBlock {
         if (MyRandom.randomPersantage(bonusChance)) {
 
             int value = random.nextInt(3);
-            Bonuses bonus = Bonuses.values()[value];
-
-            if (bonus == Bonuses.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), children);
-            else if (bonus == Bonuses.EXPLOSION_RANGE_BONUS)
+            int bonus = random.nextInt(5);
+            if (bonus <= Bonus.SPEED_BONUS) return new SpeedBonus(this, null, (int) getWidth(), children);
+            else if (bonus <= Bonus.EXPLOSION_RANGE_BONUS)
                 return new ExplosionRangeBonus(this, null, (int) getWidth(), children);
-            else if (bonus == Bonuses.BOMB_AMOUNT_BONUS)
+            else if (bonus <= Bonus.BOMB_AMOUNT_BONUS)
                 return new BombAmountBonus(this, null, (int) getWidth(), children);
         }
         return null;

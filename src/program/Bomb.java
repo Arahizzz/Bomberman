@@ -1,18 +1,19 @@
 package program;
 
 import javafx.application.Platform;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
 import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.function.UnaryOperator;
+import java.io.File;
+import javafx.scene.media.MediaPlayer;
 
 public class Bomb extends Entity {
     private static Image[] animation = new Image[3];
@@ -63,6 +64,9 @@ public class Bomb extends Entity {
 
         @Override
         protected void done() {
+            Media media = new Media(new File("Sounds\\Fire.wav").toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
             new ExplosionHandler().execute();
             new Killer().execute();
         }
@@ -87,7 +91,13 @@ public class Bomb extends Entity {
                     return node;
                 }
             };
-            Platform.runLater(() -> children.replaceAll(operator));
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    children.replaceAll(operator);
+                    Enemy.updateMobs();
+                }
+            });
         }
 
         @Override

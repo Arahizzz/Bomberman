@@ -1,20 +1,16 @@
 package program;
 
-import com.sun.javafx.sg.prism.web.NGWebView;
 import javafx.application.Platform;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
-import jdk.nashorn.internal.ir.Block;
-import sun.awt.FwDispatcher;
 
-import java.awt.*;
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,10 +39,9 @@ public class Player extends Creature {
         Platform.runLater(() -> speed.setValue(value));
     }
 
-    // додати характеристи
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
-        initAnimations();
+        startMovement();
     }
 
     public int getMaxCount() {
@@ -82,10 +77,10 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.0125 : getSpeed());
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.025 : getSpeed());
     }
 
-    private void initAnimations() {
+    void startMovement() {
         {
             new Bomb(this, null, 0, null);
         }
@@ -99,13 +94,13 @@ public class Player extends Creature {
             public void run() {
                 updateBlock();
                 checkBonuses();
-                if (getSide() == Side.TOP && topIsClear()) {
+                if (getSide() == Side.NORTH && northIsClear()) {
                     y = getY() - getSpeed();
-                } else if (getSide() == Side.BOTTOM && bottomIsClear()) {
+                } else if (getSide() == Side.SOUTH && southIsClear()) {
                     y = getY() + getSpeed();
-                } else if (getSide() == Side.LEFT && leftIsClear()) {
+                } else if (getSide() == Side.WEST && westIsClear()) {
                     x = getX() - getSpeed();
-                } else if (getSide() == Side.RIGHT && rightIsClear()) {
+                } else if (getSide() == Side.EAST && eastIsClear()) {
                     x = getX() + getSpeed();
                 }
                 Platform.runLater(new Runnable() {
@@ -126,16 +121,16 @@ public class Player extends Creature {
                     @Override
                     public void run() {
                         switch (getSide()) {
-                            case TOP:
+                            case NORTH:
                                 setAnimationBack();
                                 break;
-                            case BOTTOM:
+                            case SOUTH:
                                 setAnimationFront();
                                 break;
-                            case RIGHT:
+                            case EAST:
                                 setAnimationRight();
                                 break;
-                            case LEFT:
+                            case WEST:
                                 setAnimationLeft();
                                 break;
                         }
@@ -143,6 +138,7 @@ public class Player extends Creature {
                 });
             }
         }, 0, 100);
+        new EnemyChecker().execute();
     }
 
     private void checkBonuses() {
@@ -171,29 +167,26 @@ public class Player extends Creature {
         setFill(new ImagePattern(Animation.getPlayerAnimationLeft()));
     }
 
-    public void updateBlock() {
-        switch (getSide()) {
-            case TOP:
-                if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getTopBlock());
-                break;
-            case LEFT:
-                if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getLeftBlock());
-                break;
-            case RIGHT:
-                if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getRightBlock());
-                break;
-            case BOTTOM:
-                if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
-                    setCurrentBlock(getBottomBlock());
-                break;
-        }
-    }
-
 
     public Bomb putBomb() {
         return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
+    }
+
+    class EnemyChecker extends SwingWorker<Void, Void> {
+        HashSet<Enemy> enemies = Enemy.getEnemies();
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            while (!isCancelled()) {
+                for (Enemy enemy : enemies) {
+                    if (intersects((enemy.getBoundsInParent()))) {
+                        decreaseLife();
+                        Thread.sleep(2500);
+                    }
+                }
+                Thread.sleep(100);
+            }
+            return null;
+        }
     }
 }
