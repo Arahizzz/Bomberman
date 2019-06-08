@@ -18,10 +18,10 @@ public class GamePlayGround {
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
-    private int grassPersantage = 50;
+    private int grassPercentage = 50;
     private int averageMobsNumber = 3; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
-    int blocksPerMob = 130 * grassPersantage / 100 / averageMobsNumber;
+    int blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
     int perBlockChance = 100 / blocksPerMob;
     int mobsCreated = 0;
     ArrayList<GrassBlock> mobBlocks = new ArrayList<GrassBlock>();
@@ -41,7 +41,7 @@ public class GamePlayGround {
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(grassPersantage); //set grass persantage
+        generateBlocks(grassPercentage); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
         initMobs();

@@ -142,6 +142,45 @@ public class Enemy extends Creature {
         }
     }
 
+    @Override
+    public void updateBlock() {
+        super.updateBlock();
+        try {
+            if (!getCurrentBlock().isWalkAllowed())
+                throw new WrongBlockException();
+        } catch (WrongBlockException e) {
+            System.err.println("Mob in wrong block.");
+            e.printStackTrace();
+            System.err.println("Repositioning");
+            Repositioning();
+        }
+    }
+
+    public void Repositioning() {
+        if (getTopBlock().isWalkAllowed())
+            Platform.runLater(() -> {
+                setX(getTopBlock().getX() + 10);
+                setY(getTopBlock().getY() + 10);
+            });
+        else if (getBottomBlock().isWalkAllowed())
+            Platform.runLater(() -> {
+                setX(getBottomBlock().getX() + 10);
+                setY(getBottomBlock().getY() + 10);
+            });
+        else if (getLeftBlock().isWalkAllowed())
+            Platform.runLater(() -> {
+                setX(getLeftBlock().getX() + 10);
+                setY(getLeftBlock().getY() + 10);
+            });
+        else if (getRightBlock().isWalkAllowed())
+            Platform.runLater(() -> {
+                setX(getRightBlock().getX() + 10);
+                setY(getRightBlock().getY() + 10);
+            });
+        else
+            kill();
+    }
+
     void freeMob() {
         if (getTopBlock().isWalkAllowed())
             setSide(Side.NORTH);
@@ -282,4 +321,8 @@ public class Enemy extends Creature {
     public static HashSet<Enemy> getEnemies() {
         return enemies;
     }
+}
+
+class WrongBlockException extends Exception {
+
 }
