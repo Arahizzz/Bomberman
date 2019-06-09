@@ -18,7 +18,6 @@ public class Player extends Creature {
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
 
-    private AnimationTimer movement;
     private AnimationTimer animation;
 
     public double getSpeed() {
@@ -26,11 +25,12 @@ public class Player extends Creature {
     }
 
     private DoubleProperty speed = new SimpleDoubleProperty(0.65);
-    private static final double MAXSPEED = 3.0;
+    private static final double MAXSPEED = 1.5;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
     private int currentCount = -1;
     private final IntegerProperty range = new SimpleIntegerProperty(1);
+    private Task<Void> checker;
 
     public DoubleProperty speedProperty() {
         return speed;
@@ -95,7 +95,9 @@ public class Player extends Creature {
             new Sounds();
         }
         setAnimationFront();
-        movement = new AnimationTimer() {
+        animation = new AnimationTimer() {
+            private long lastUpdate = 0;
+
             @Override
             public void handle(long now) {
                 updateBlock();
@@ -109,14 +111,6 @@ public class Player extends Creature {
                 } else if (getSide() == Side.EAST && eastIsClear()) {
                     setX(getX() + getSpeed());
                 }
-            }
-        };
-        movement.start();
-        animation = new AnimationTimer() {
-            private long lastUpdate = 0;
-
-            @Override
-            public void handle(long now) {
                 if (now - lastUpdate >= 150_000_000) {
                     switch (getSide()) {
                         case NORTH:
@@ -137,7 +131,8 @@ public class Player extends Creature {
             }
         };
         animation.start();
-        Thread enemyChecker = new Thread(new EnemyChecker());
+        checker = new EnemyChecker();
+        Thread enemyChecker = new Thread(checker);
         enemyChecker.setDaemon(true);
         enemyChecker.start();
     }
@@ -159,8 +154,8 @@ public class Player extends Creature {
 
     @Override
     void cancelAnimations() {
-        movement.stop();
         animation.stop();
+        checker.cancel();
     }
 
     public void setAnimationFront() {

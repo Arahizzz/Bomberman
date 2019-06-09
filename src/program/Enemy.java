@@ -17,7 +17,6 @@ public class Enemy extends Creature {
     private static final int HEIGHT = 50;
     private boolean activated = false;
     private static double turnProbability = 0.05;
-    private AnimationTimer movement;
     private AnimationTimer animation;
 
     static {
@@ -43,7 +42,8 @@ public class Enemy extends Creature {
     }
 
     void startMovement() {
-        movement = new AnimationTimer() {
+        animation = new AnimationTimer() {
+            private long lastUpdate = 0;
             @Override
             public void handle(long now) {
                 updateBlock();
@@ -51,13 +51,6 @@ public class Enemy extends Creature {
                     moveForward();
                 } else
                     turnBack();
-            }
-        };
-        movement.start();
-        animation = new AnimationTimer() {
-            private long lastUpdate = 0;
-            @Override
-            public void handle(long now) {
                 if (now - lastUpdate >= 150_000_000) {
                     switch (getSide()) {
                         case NORTH:
@@ -124,7 +117,6 @@ public class Enemy extends Creature {
     }
 
     public void cancelAnimations() {
-        movement.stop();
         animation.stop();
     }
 
