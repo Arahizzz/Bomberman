@@ -43,4 +43,7 @@ public class Sounds {
         victory.seek(Duration.ZERO);
         victory.play();
     }
+
+    public static void init() {
+    }
 }

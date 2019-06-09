@@ -90,10 +90,6 @@ public class Player extends Creature {
     }
 
     void startMovement() {
-        {
-            new Bomb(this, null, 0, null);
-            new Sounds();
-        }
         setAnimationFront();
         animation = new AnimationTimer() {
             private long lastUpdate = 0;
@@ -153,9 +149,15 @@ public class Player extends Creature {
     }
 
     @Override
-    void cancelAnimations() {
-        animation.stop();
+    public void kill() {
+        super.kill();
         checker.cancel();
+        Sounds.playLost();
+    }
+
+    @Override
+    void stopAnimations() {
+        animation.stop();
     }
 
     public void setAnimationFront() {

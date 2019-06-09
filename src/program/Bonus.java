@@ -1,6 +1,8 @@
 package program;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -78,6 +80,7 @@ class SpeedBonus extends Bonus {
 }
 
 class Exit extends Bonus {
+    private BooleanProperty hasBeenCollected;
     static boolean mobsKilled;
     static Exit exit;
 
@@ -86,12 +89,16 @@ class Exit extends Bonus {
         mobsKilled = false;
         exit = this;
         setFill(new ImagePattern(new Image("Blocks\\DisabledPortal.png")));
+        hasBeenCollected = new SimpleBooleanProperty(false);
     }
 
     @Override
     void activate(Player player) {
-        if (mobsKilled)
+        if (mobsKilled) {
             super.activate(player);
+            hasBeenCollected.set(true);
+            Sounds.playVictory();
+        }
     }
 
     public static boolean isMobsKilled() {
@@ -101,6 +108,14 @@ class Exit extends Bonus {
     public static void activatePortal() {
         Exit.mobsKilled = true;
         Platform.runLater(() -> exit.setFill(new ImagePattern(new Image("Blocks\\Portal.png"))));
+    }
+
+    public boolean isHasBeenCollected() {
+        return hasBeenCollected.get();
+    }
+
+    public static BooleanProperty hasBeenCollectedProperty() {
+        return exit.hasBeenCollected;
     }
 }
 

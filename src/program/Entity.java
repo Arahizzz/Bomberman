@@ -143,7 +143,7 @@ abstract class Creature extends Entity {
     }
 
     public void kill() {
-        cancelAnimations();
+        stopAnimations();
         Platform.runLater(() -> getChildren().remove(this));
         creatures.remove(this);
     }
@@ -190,7 +190,7 @@ abstract class Creature extends Entity {
 
     abstract void startMovement();
 
-    abstract void cancelAnimations();
+    abstract void stopAnimations();
 }
 
 enum Side {

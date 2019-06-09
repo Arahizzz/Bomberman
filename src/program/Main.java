@@ -10,6 +10,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Sounds.init();
+        Bomb.init();
+        Animation.init();
         Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         primaryStage.setTitle("Bomberman");
         primaryStage.setScene(new Scene(root, 300, 275));

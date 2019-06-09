@@ -240,4 +240,7 @@ public class Bomb extends Entity {
             return null;
         }
     }
+
+    public static void init() {
+    }
 }

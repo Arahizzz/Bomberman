@@ -116,7 +116,7 @@ public class Enemy extends Creature {
         super.kill();
     }
 
-    public void cancelAnimations() {
+    public void stopAnimations() {
         animation.stop();
     }
 
