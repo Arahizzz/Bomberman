@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -15,6 +16,7 @@ public class Main extends Application {
         Animation.init();
         Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         primaryStage.setTitle("Bomberman");
+        primaryStage.getIcons().add(new Image("Bomb\\Bomb_f01.png"));
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.setMaximized(true);
         primaryStage.show();

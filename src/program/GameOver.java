@@ -30,6 +30,7 @@ public class GameOver {
             SingleGame singleGame = new SingleGame();
             Scene scene = ((Node) event.getSource()).getScene();
             Stage stage = (Stage) scene.getWindow();
+            Platform.runLater(() -> stage.setTitle("Single game"));
             stage.setScene(singleGame.start(scene.getWidth(), scene.getHeight()));
         });
         exit.setOnAction(event -> Platform.exit());
@@ -38,6 +39,7 @@ public class GameOver {
                 Pane pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
                 Scene scene = ((Node) event.getSource()).getScene();
                 Stage stage = (Stage) scene.getWindow();
+                Platform.runLater(() -> stage.setTitle("Bomberman"));
                 stage.setScene(new Scene(pane, scene.getWidth(), scene.getHeight()));
             } catch (Exception e) {
                 e.printStackTrace();

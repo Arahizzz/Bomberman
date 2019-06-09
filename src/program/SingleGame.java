@@ -53,7 +53,10 @@ public class SingleGame {
             Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
 
             Stage stage = (Stage) scene.getWindow();
-            Platform.runLater(() -> stage.setScene(gameOver));
+            Platform.runLater(() -> {
+                stage.setTitle("Game over");
+                stage.setScene(gameOver);
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
