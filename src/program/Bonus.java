@@ -79,11 +79,13 @@ class SpeedBonus extends Bonus {
 
 class Exit extends Bonus {
     static boolean mobsKilled;
+    static Exit exit;
 
     public Exit(GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
         super(currentBlock, blockArray, blockSize, children);
-        setFill(new ImagePattern(new Image("Blocks\\Portal.png")));
         mobsKilled = false;
+        exit = this;
+        setFill(new ImagePattern(new Image("Blocks\\DisabledPortal.png")));
     }
 
     @Override
@@ -96,8 +98,9 @@ class Exit extends Bonus {
         return mobsKilled;
     }
 
-    public static void setMobsKilled(boolean mobsKilled) {
-        Exit.mobsKilled = mobsKilled;
+    public static void activatePortal() {
+        Exit.mobsKilled = true;
+        Platform.runLater(() -> exit.setFill(new ImagePattern(new Image("Blocks\\Portal.png"))));
     }
 }
 

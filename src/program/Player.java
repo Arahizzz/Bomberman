@@ -1,5 +1,6 @@
 package program;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.DoubleProperty;
@@ -12,19 +13,20 @@ import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
 import java.util.HashSet;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Player extends Creature {
     private static HashSet<Bonus> bonuses = Bonus.getBonuses();
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
 
+    private AnimationTimer movement;
+    private AnimationTimer animation;
+
     public double getSpeed() {
         return speed.get();
     }
 
-    private DoubleProperty speed = new SimpleDoubleProperty(1.5);
+    private DoubleProperty speed = new SimpleDoubleProperty(0.65);
     private static final double MAXSPEED = 3.0;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
@@ -77,7 +79,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.025 : getSpeed());
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.01 : getSpeed());
     }
 
     void startMovement() {
@@ -85,59 +87,48 @@ public class Player extends Creature {
             new Bomb(this, null, 0, null);
         }
         setAnimationFront();
-        Timer movement = new Timer();
-        movement.schedule(new TimerTask() {
-            double x = getX();
-            double y = getY();
-
+        movement = new AnimationTimer() {
             @Override
-            public void run() {
+            public void handle(long now) {
                 updateBlock();
                 checkBonuses();
                 if (getSide() == Side.NORTH && northIsClear()) {
-                    y = getY() - getSpeed();
+                    setY(getY() - getSpeed());
                 } else if (getSide() == Side.SOUTH && southIsClear()) {
-                    y = getY() + getSpeed();
+                    setY(getY() + getSpeed());
                 } else if (getSide() == Side.WEST && westIsClear()) {
-                    x = getX() - getSpeed();
+                    setX(getX() - getSpeed());
                 } else if (getSide() == Side.EAST && eastIsClear()) {
-                    x = getX() + getSpeed();
+                    setX(getX() + getSpeed());
                 }
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setX(x);
-                        setY(y);
-                    }
-                });
             }
-        }, 0, 10);
+        };
+        movement.start();
+        animation = new AnimationTimer() {
+            private long lastUpdate = 0;
 
-        Timer animation = new Timer();
-        animation.schedule(new TimerTask() {
             @Override
-            public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (getSide()) {
-                            case NORTH:
-                                setAnimationBack();
-                                break;
-                            case SOUTH:
-                                setAnimationFront();
-                                break;
-                            case EAST:
-                                setAnimationRight();
-                                break;
-                            case WEST:
-                                setAnimationLeft();
-                                break;
-                        }
+            public void handle(long now) {
+                if (now - lastUpdate >= 150_000_000) {
+                    switch (getSide()) {
+                        case NORTH:
+                            setAnimationBack();
+                            break;
+                        case SOUTH:
+                            setAnimationFront();
+                            break;
+                        case EAST:
+                            setAnimationRight();
+                            break;
+                        case WEST:
+                            setAnimationLeft();
+                            break;
                     }
-                });
+                    lastUpdate = now;
+                }
             }
-        }, 0, 100);
+        };
+        animation.start();
         new EnemyChecker().execute();
     }
 
@@ -150,16 +141,22 @@ public class Player extends Creature {
         }
     }
 
-    public void setAnimationFront(){
+    @Override
+    void cancelAnimations() {
+        movement.stop();
+        animation.stop();
+    }
+
+    public void setAnimationFront() {
         // javafx.scene.image.Image image = new Image("Bomberman\\Front\\Bman_F_f00.png");
         setFill(new ImagePattern(Animation.getPlayerAnimationFront()));
     }
 
-    public void setAnimationBack(){
+    public void setAnimationBack() {
         setFill(new ImagePattern(Animation.getPlayerAnimationBack()));
     }
 
-    public void setAnimationRight(){
+    public void setAnimationRight() {
         setFill(new ImagePattern(Animation.getPlayerAnimationRight()));
     }
 

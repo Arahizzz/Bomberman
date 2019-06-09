@@ -19,7 +19,7 @@ public class GamePlayGround {
     private Random random = new Random();
     private Player player;
     private int grassPercentage = 50;
-    private int averageMobsNumber = 3; // приблизна кількість кількість мобів
+    private int averageMobsNumber = 15; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
     int blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
     int perBlockChance = 100 / blocksPerMob;

@@ -1,22 +1,23 @@
 package program;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
 
 import java.util.HashSet;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Enemy extends Creature {
 
     private static HashSet<Enemy> enemies = new HashSet<>();
-    private static double speed = 1.5;
+    private static double speed = 0.65;
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
     private boolean activated = false;
     private static double turnProbability = 0.05;
+    private AnimationTimer movement;
+    private AnimationTimer animation;
 
     Enemy(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {//Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
@@ -36,76 +37,62 @@ public class Enemy extends Creature {
     }
 
     void startMovement() {
-        Timer movement = new Timer();
-        movement.schedule(new TimerTask() {
+        movement = new AnimationTimer() {
             @Override
-            public void run() {
+            public void handle(long now) {
                 updateBlock();
                 if (frontIsClear()) {
                     moveForward();
                 } else
                     turnBack();
             }
-        }, 1000, 10);
-
-        Timer animation = new Timer();
-        animation.schedule(new TimerTask() {
+        };
+        movement.start();
+        animation = new AnimationTimer() {
+            private long lastUpdate = 0;
             @Override
-            public void run() {
-                switch (getSide()) {
-                    case NORTH:
-                        Platform.runLater(() -> setAnimationBack());
-                        break;
-                    case SOUTH:
-                        Platform.runLater(() -> setAnimationFront());
-                        break;
-                    case EAST:
-                        Platform.runLater(() -> setAnimationRight());
-                        break;
-                    case WEST:
-                        Platform.runLater(() -> setAnimationLeft());
-                        break;
+            public void handle(long now) {
+                if (now - lastUpdate >= 150_000_000) {
+                    switch (getSide()) {
+                        case NORTH:
+                            setAnimationBack();
+                            break;
+                        case SOUTH:
+                            setAnimationFront();
+                            break;
+                        case EAST:
+                            setAnimationRight();
+                            break;
+                        case WEST:
+                            setAnimationLeft();
+                            break;
+                    }
+                    turn();
+                    lastUpdate = now;
                 }
             }
-        }, 1000, 100);
+        };
+        animation.start();
     }
 
     private void moveForward() {
         switch (getSide()) {
             case NORTH:
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setY(getY() - speed);
-                    }
-                });
+                setY(getY() - speed);
                 break;
             case SOUTH:
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setY(getY() + speed);
-                    }
-                });
+                setY(getY() + speed);
                 break;
             case EAST:
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setX(getX() + speed);
-                    }
-                });
+                setX(getX() + speed);
                 break;
             case WEST:
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setX(getX() - speed);
-                    }
-                });
+                setX(getX() - speed);
                 break;
         }
+    }
 
+    private void turn() {
         if (leftIsClear() && RandomBoolean.get(turnProbability))
             turnLeft();
         else if (rightIsClear() && RandomBoolean.get(turnProbability))
@@ -130,13 +117,18 @@ public class Enemy extends Creature {
         super.kill();
     }
 
+    public void cancelAnimations() {
+        movement.stop();
+        animation.stop();
+    }
+
     public static void updateMobs() {
         if (enemies.size() != 0) {
             for (Enemy enemy : enemies) {
                 enemy.checkIfFree();
             }
         } else
-            Exit.setMobsKilled(true);
+            Exit.activatePortal();
     }
 
     public void checkIfFree() {
@@ -154,8 +146,7 @@ public class Enemy extends Creature {
         } catch (WrongBlockException e) {
             System.err.println("Mob in wrong block.");
             e.printStackTrace();
-            System.err.println("Repositioning");
-            Repositioning();
+            kill();
         }
     }
 
