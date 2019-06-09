@@ -9,12 +9,9 @@ import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -26,7 +23,6 @@ public class Bomb extends Entity {
     private static Image[] flames = new Image[5];
     private Bomb bomb = this;
     private Player player;
-    private static MediaPlayer mediaPlayer = new MediaPlayer(new Media(new File("Sounds\\Fire.wav").toURI().toString()));
 
     static {
         for (int i = 0; i < animation.length; i++) {
@@ -69,8 +65,7 @@ public class Bomb extends Entity {
         bombCountDown.getKeyFrames().addAll(frame1, frame2, frame3, frame4);
 
         bombCountDown.setOnFinished(e -> {
-            mediaPlayer.seek(Duration.ZERO);
-            mediaPlayer.play();
+            Sounds.playExplosion();
 
             Thread flames = new Thread(new Flames(calculateDamage.getValue(), getChildren()));
             flames.setDaemon(true);

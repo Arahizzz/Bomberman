@@ -3,19 +3,17 @@ package program;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
 
-import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Player extends Creature {
+    private BooleanProperty isAlive = new SimpleBooleanProperty(true);
     private static HashSet<Bonus> bonuses = Bonus.getBonuses();
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
@@ -83,9 +81,18 @@ public class Player extends Creature {
         setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.02 : getSpeed());
     }
 
+    public boolean isIsAlive() {
+        return isAlive.get();
+    }
+
+    public BooleanProperty isAliveProperty() {
+        return isAlive;
+    }
+
     void startMovement() {
         {
             new Bomb(this, null, 0, null);
+            new Sounds();
         }
         setAnimationFront();
         movement = new AnimationTimer() {
@@ -130,7 +137,15 @@ public class Player extends Creature {
             }
         };
         animation.start();
-        new EnemyChecker().execute();
+        Thread enemyChecker = new Thread(new EnemyChecker());
+        enemyChecker.setDaemon(true);
+        enemyChecker.start();
+    }
+
+    @Override
+    public void decreaseLife() {
+        super.decreaseLife();
+        Sounds.playHit();
     }
 
     private void checkBonuses() {
@@ -170,11 +185,11 @@ public class Player extends Creature {
         return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
     }
 
-    class EnemyChecker extends SwingWorker<Void, Void> {
+    class EnemyChecker extends Task<Void> {
         Set<Enemy> enemies = Enemy.getEnemies();
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Void call() throws Exception {
             while (!isCancelled()) {
                 for (Enemy enemy : enemies) {
                     if (intersects((enemy.getBoundsInParent()))) {

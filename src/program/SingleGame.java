@@ -33,6 +33,10 @@ public class SingleGame extends Application {
         gamePlayGround.initPlayer();
         initListeners(gamePlayGround);
 
+        gamePlayGround.getPlayer().isAliveProperty().addListener(observable -> {
+
+        });
+
         Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());
         characteristics.setAlignment(Pos.CENTER);
         hPane.getChildren().addAll(characteristics, vPane);
