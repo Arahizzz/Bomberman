@@ -6,11 +6,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
 
-import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Enemy extends Creature {
 
-    private static HashSet<Enemy> enemies = new HashSet<>();
+    private static Set<Enemy> enemies;
     private static double speed = 0.65;
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
@@ -18,6 +19,11 @@ public class Enemy extends Creature {
     private static double turnProbability = 0.05;
     private AnimationTimer movement;
     private AnimationTimer animation;
+
+    static {
+        ConcurrentHashMap<Enemy, Boolean> map = new ConcurrentHashMap<>();
+        enemies = map.keySet(true);
+    }
 
     Enemy(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {//Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
@@ -312,7 +318,7 @@ public class Enemy extends Creature {
         this.activated = activated;
     }
 
-    public static HashSet<Enemy> getEnemies() {
+    public static Set<Enemy> getEnemies() {
         return enemies;
     }
 }

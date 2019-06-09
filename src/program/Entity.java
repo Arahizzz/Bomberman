@@ -8,7 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
-import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 abstract public class Entity extends Rectangle {
@@ -111,8 +112,13 @@ abstract public class Entity extends Rectangle {
 
 abstract class Creature extends Entity {
     private Side side = Side.NONE;
-    private static HashSet<Creature> creatures = new HashSet<>();
+    private static Set<Creature> creatures;
     private IntegerProperty life = new SimpleIntegerProperty();
+
+    static {
+        ConcurrentHashMap<Creature, Boolean> map = new ConcurrentHashMap<>();
+        creatures = map.keySet(true);
+    }
 
     public int getLife() {
         return life.get();
@@ -142,7 +148,7 @@ abstract class Creature extends Entity {
         creatures.remove(this);
     }
 
-    public static HashSet<Creature> getCreatures() {
+    public static Set<Creature> getCreatures() {
         return creatures;
     }
 

@@ -2,18 +2,20 @@ package program;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
+import java.io.File;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.function.UnaryOperator;
-import java.io.File;
-import javafx.scene.media.MediaPlayer;
 
 public class Bomb extends Entity {
     private static Image[] animation = new Image[3];
@@ -68,7 +70,9 @@ public class Bomb extends Entity {
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             mediaPlayer.play();
             new ExplosionHandler().execute();
-            new Killer().execute();
+            Thread killer = new Thread(new Killer());
+            killer.setDaemon(true);
+            killer.start();
         }
 
         private void explode() {
@@ -193,14 +197,19 @@ public class Bomb extends Entity {
             }
         }
 
-        private class Killer extends SwingWorker<Void, Void> {
+        private class Killer extends Task<Void> {
+
             @Override
-            protected Void doInBackground() throws Exception {
-                for (GameBlock block : damagedZone) {
-                    for (Creature creature : Creature.getCreatures()) {
-                        if (block.containsCreature(creature))
-                            creature.decreaseLife();
+            protected Void call() throws Exception {
+                try {
+                    for (GameBlock block : damagedZone) {
+                        for (Creature creature : Creature.getCreatures()) {
+                            if (block.containsCreature(creature))
+                                creature.decreaseLife();
+                        }
                     }
+                } catch (ConcurrentModificationException e) {
+                    e.printStackTrace();
                 }
                 return null;
             }
