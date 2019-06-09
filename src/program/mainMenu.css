@@ -1,0 +1,11 @@
+.background {
+    -fx-background-image: url('/Menu/Bomberman.png');
+}
+
+.button {
+    -fx-background-color: transparent;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
