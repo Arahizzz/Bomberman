@@ -1,9 +1,11 @@
 package program;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePlayGround {
@@ -16,7 +18,13 @@ public class GamePlayGround {
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
-    private int grassPersantage=40;
+    private int grassPercentage = 50;
+    private int averageMobsNumber = 15; // приблизна кількість кількість мобів
+    private int countGrassBlocks = 0;
+    int blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
+    int perBlockChance = 100 / blocksPerMob;
+    int mobsCreated = 0;
+    ArrayList<GrassBlock> mobBlocks = new ArrayList<GrassBlock>();
 
     public Player getPlayer() {
         return player;
@@ -27,21 +35,139 @@ public class GamePlayGround {
     }
 
     ObservableList<Node> children;
-
-    GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight) {
-this.children=children;
+    GamePlayGround(ObservableList<Node> children,int WinWidth, int WinHeight) {
+        this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
-        blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
+        blockSize =  Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
-        generateBlocks(grassPersantage); //set grass persantage
+        generateBlocks(grassPercentage); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
+        generateExit();
+        initMobs();
     }
 
-    public void initPlayer(){
+    public void initMobs(GrassBlock spawn) {
+        Platform.runLater(() -> {
+            final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
+            children.add(enemy);
+        });
+    }
+
+    public void initPlayer() {
         player = new Player(spawn, blockArray, blockSize, children);
         children.add(player);
     }
+
+    private boolean checkMobNearPlayer(GameBlock mobSpawn) {
+        int rangeCheck = 3; // кількість блоків вверх вниз вправо вліво від гравця без мобів (спавн не включно)
+
+        //spawn
+
+        if (mobSpawn == spawn) return false;
+
+        //left
+        for (int i = 1; i < rangeCheck + 1; i++) {
+
+            if (!blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - i].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() - i] == mobSpawn)
+                return false;
+        }
+
+        //right
+        for (int i = 1; i < rangeCheck + 1; i++) {
+            if (!blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex()][spawn.getHorizontalIndex() + i] == mobSpawn)
+                return false;
+        }
+
+        //top
+        for (int i = 1; i < rangeCheck + 1; i++) {
+            if (!blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex()] == mobSpawn)
+                return false;
+        }
+
+        //bottom
+        for (int i = 1; i < rangeCheck + 1; i++) {
+            if (!blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()].isWalkAllowed())
+                break;
+            if (blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex()] == mobSpawn)
+                return false;
+        }
+
+        ////////////////////////////DIAGONAL
+        if (spawn.getHorizontalIndex() % 2 == 0 || spawn.getVerticalIndex() % 2 == 0) {
+
+            if (spawn.getHorizontalIndex() == 1) {
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex() + i].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex() + i] == mobSpawn)
+                        return false;
+                }
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex() + i].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex() + i] == mobSpawn)
+                        return false;
+                }
+            }
+
+            if (spawn.getHorizontalIndex() == 15) {
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex() - i].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() - 1][spawn.getHorizontalIndex() - i] == mobSpawn)
+                        return false;
+                }
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex() - i].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() + 1][spawn.getHorizontalIndex() - i] == mobSpawn)
+                        return false;
+                }
+            }
+
+            if (spawn.getVerticalIndex() == 1) {
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex() - 1].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex() - 1] == mobSpawn)
+                        return false;
+                }
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex() + 1].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() + i][spawn.getHorizontalIndex() + 1] == mobSpawn)
+                        return false;
+                }
+            }
+
+            if (spawn.getVerticalIndex() == 11) {
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex() - 1].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex() - 1] == mobSpawn)
+                        return false;
+                }
+                for (int i = 0; i < rangeCheck + 1; i++) {
+                    if (!blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex() + 1].isWalkAllowed())
+                        break;
+                    if (blockArray[spawn.getVerticalIndex() - i][spawn.getHorizontalIndex() + 1] == mobSpawn)
+                        return false;
+                }
+            }
+
+        }
+
+
+        return true;
+    }
+
 
     private void generateSpawnArea(int row, int column) {
 
@@ -127,7 +253,7 @@ this.children=children;
                     blockArray[row - 1][column] = new GrassBlock(column * blockSize, (row - 1) * blockSize, blockSize, blockSize, row - 1, column);
                     blockArray[row + 1][column] = new GrassBlock(column * blockSize, (row + 1) * blockSize, blockSize, blockSize, row + 1, column);
                     return;
-                }else {
+                } else {
                     //задаємо блок в центр поля
                     if (column == 1)
                         blockArray[row][column + 1] = new GrassBlock((column + 1) * blockSize, row * blockSize, blockSize, blockSize, row, column + 1);
@@ -171,7 +297,7 @@ this.children=children;
         }
 
         blockArray[row][column] = new GrassBlock(column * blockSize, row * blockSize, blockSize, blockSize, row, column);
-      //spawn point
+        //spawn point
         return blockArray[row][column];
     }
 
@@ -182,7 +308,7 @@ this.children=children;
         //рожева цегла непарні сплошні рядки
         for (int i = 1; i < blockNumberY - 1; i += 2) {
             for (int j = 1; j < blockNumberX - 1; j += 1) {
-                blockArray[i][j] = blockArray[i][j] = randomBrickOrGrass(grassPersantage, i, j);
+                blockArray[i][j] = randomBrickOrGrass(grassPersantage, i, j);
             }
         }
 
@@ -194,14 +320,56 @@ this.children=children;
         }
 
     }
+
+    private void initMobs() {
+
+        for (GameBlock[] gameBlock : blockArray) {
+            for (GameBlock gameBlock2 : gameBlock) {
+
+
+                if (gameBlock2.walkAllowed) {
+
+                    countGrassBlocks++;
+
+                    if (countGrassBlocks > mobsCreated * blocksPerMob) {
+
+                        if (MyRandom.randomPersantage(perBlockChance) && checkMobNearPlayer(gameBlock2)) {
+                            initMobs((GrassBlock) gameBlock2);//spawnMob//////////////////////////////////////////////////////////////
+                            mobBlocks.add((GrassBlock) gameBlock2);
+                            perBlockChance = 100 / blocksPerMob;
+                            mobsCreated++;
+                        } else
+                            perBlockChance += 100 / blocksPerMob;
+
+                    }
+                }
+            }
+        }
+    }
+
     //persantage of grass
 
     private GameBlock randomBrickOrGrass(int grassPersantage, int i, int j) {
-        if (MyRandom.randomPersantage(grassPersantage))
-            return new GrassBlock(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
+        if (MyRandom.randomPersantage(grassPersantage)) {
+            GrassBlock grassBlock = new GrassBlock(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
 
+            return grassBlock;
+        }
         return new RedBrick(blockSize * j, i * blockSize, blockSize, blockSize, i, j);
     }
+
+    private void generateExit() {
+        int verticalIndex;
+        int horizontalIndex;
+        do {
+            verticalIndex = random.nextInt(blockNumberY - 1) + 1;
+            horizontalIndex = random.nextInt(blockNumberX - 1) + 1;
+        } while (verticalIndex % 2 == 0 & horizontalIndex % 2 == 0 & verticalIndex != spawn.getVerticalIndex() & horizontalIndex != spawn.getHorizontalIndex());
+        RedBrick brick = new RedBrick(blockSize * horizontalIndex, verticalIndex * blockSize, blockSize, blockSize, verticalIndex, horizontalIndex);
+        blockArray[verticalIndex][horizontalIndex] = brick;
+        brick.setExit(new Exit(brick, blockArray, blockSize, children));
+    }
+
     private void initStoneBlocks() {
         //задаємо бетонну рамку
         // верх і низ
@@ -231,7 +399,6 @@ this.children=children;
         for (int i = 0; i < blockNumberY; i++)
             for (int j = 0; j < blockNumberX; j++)
                 children.add(getElementAt(i, j));
-
     }
 
     public Rectangle getElementAt(int row, int column) {
@@ -242,7 +409,7 @@ this.children=children;
         Bomb bomb = player.putBomb();
         if (bomb != null) {
             children.add(bomb);
-            bomb.start(children);
+            bomb.activate();
         }
     }
 

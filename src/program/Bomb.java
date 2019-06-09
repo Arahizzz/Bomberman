@@ -1,17 +1,21 @@
 package program;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.ImagePattern;
+import javafx.util.Duration;
 
-import javax.swing.*;
-import java.util.*;
+import java.util.ConcurrentModificationException;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 
 public class Bomb extends Entity {
@@ -44,61 +48,48 @@ public class Bomb extends Entity {
         this.player = player;
     }
 
-    public void start(ObservableList<Node> children) {
-        new BombHandler(children).execute();
+    public void activate() {
+        Task<HashSet<GameBlock>> calculateDamage = new DamageCalculator();
+        Thread thread = new Thread(calculateDamage);
+        thread.setDaemon(true);
+        thread.start();
+
+        final Timeline bombCountDown = new Timeline();
+        final KeyValue value1 = new KeyValue(fillProperty(), new ImagePattern(animation[0]));
+        final KeyFrame frame1 = new KeyFrame(Duration.ZERO, value1);
+        final KeyValue value2 = new KeyValue(fillProperty(), new ImagePattern(animation[1]));
+        final KeyFrame frame2 = new KeyFrame(Duration.millis(1000), value2);
+        final KeyValue value3 = new KeyValue(fillProperty(), new ImagePattern(animation[2]));
+        final KeyFrame frame3 = new KeyFrame(Duration.millis(1750), value3);
+        final KeyFrame frame4 = new KeyFrame(Duration.millis(2500), value3);
+        bombCountDown.getKeyFrames().addAll(frame1, frame2, frame3, frame4);
+
+        bombCountDown.setOnFinished(e -> {
+            Sounds.playExplosion();
+
+            Thread flames = new Thread(new Flames(calculateDamage.getValue(), getChildren()));
+            flames.setDaemon(true);
+            flames.start();
+
+            Thread killer = new Thread(new Killer(calculateDamage.getValue()));
+            killer.setDaemon(true);
+            killer.start();
+
+            Thread explosion = new Thread(new Explosion(calculateDamage.getValue(), getChildren()));
+            explosion.setDaemon(true);
+            explosion.start();
+        });
+
+        bombCountDown.play();
     }
 
-    public void explode(ObservableList<Node> children) {
-        children.remove(this);
-    }
-
-    class BombHandler extends SwingWorker<Void, Void> {
-        ObservableList<Node> children;
-        GameBlock[][] blocks = getBlockArray();
+    private class DamageCalculator extends Task<HashSet<GameBlock>> {
         HashSet<GameBlock> damagedZone = new HashSet<>();
 
-        public BombHandler(ObservableList<Node> children) {
-            this.children = children;
-        }
-
         @Override
-        protected void done() {
-            new ExplosionHandler().execute();
-            new Killer().execute();
-        }
-
-        private void explode() {
-            UnaryOperator<Node> operator = new UnaryOperator<Node>() {
-                @Override
-                public Node apply(Node node) {
-                    if (node instanceof RedBrick) {
-                        RedBrick block = (RedBrick) node;
-                            if (damagedZone.contains(block)) {
-                                Bonus bonus = block.generateBonus(children);
-                                final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
-                                        (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
-                                blocks[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
-                                if (bonus != null)
-                                    Platform.runLater(() -> children.add(bonus));
-                                return grassBlock;
-                            }
-                        return block;
-                    }
-                    return node;
-                }
-            };
-            Platform.runLater(() -> children.replaceAll(operator));
-        }
-
-        @Override
-        protected Void doInBackground() throws Exception {
+        protected HashSet<GameBlock> call() throws Exception {
             calculateDamage();
-            Thread.sleep(1000);
-            Platform.runLater(() -> setFill(new ImagePattern(animation[1])));
-            Thread.sleep(1000);
-            Platform.runLater(() -> setFill(new ImagePattern(animation[2])));
-            Thread.sleep(1000);
-            return null;
+            return damagedZone;
         }
 
         private void calculateDamage() {
@@ -152,48 +143,101 @@ public class Bomb extends Entity {
                     damagedZone.add(block);
             }
         }
+    }
 
-        private class ExplosionHandler extends SwingWorker<Void, Void> {
+    private class Flames extends Task<Void> {
+        private HashSet<GameBlock> damagedZone;
+        private ObservableList<Node> children;
 
-            @Override
-            protected Void doInBackground() throws Exception {
-                LinkedList<Node> images = new LinkedList<>();
-                Platform.runLater(() -> children.remove(bomb));
-                player.setCurrentCount(player.getCurrentCount() - 1);
-                getCurrentBlock().setContainsEntity(false);
-                for (int i = 0; i < flames.length; i++) {
-                    for (GameBlock block : damagedZone) {
-                        ImageView imageView = new ImageView(flames[i]);
-                        imageView.setX(block.getX());
-                        imageView.setY(block.getY());
-                        imageView.setFitWidth(block.getWidth());
-                        imageView.setFitHeight(block.getHeight());
-                        Platform.runLater(() -> children.add(imageView));
-                        images.add(imageView);
-                    }
-                    Thread.sleep(100);
-                    Platform.runLater(() -> children.removeAll(images));
-                }
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                explode();
-            }
+        public Flames(HashSet<GameBlock> damagedZone, ObservableList<Node> children) {
+            this.damagedZone = damagedZone;
+            this.children = children;
         }
 
-        private class Killer extends SwingWorker<Void, Void> {
-            @Override
-            protected Void doInBackground() throws Exception {
+        @Override
+        protected Void call() throws Exception {
+            LinkedList<Node> images = new LinkedList<>();
+            Platform.runLater(() -> children.remove(bomb));
+            player.setCurrentCount(player.getCurrentCount() - 1);
+            getCurrentBlock().setContainsEntity(false);
+            for (int i = 0; i < flames.length; i++) {
+                for (GameBlock block : damagedZone) {
+                    ImageView imageView = new ImageView(flames[i]);
+                    imageView.setX(block.getX());
+                    imageView.setY(block.getY());
+                    imageView.setFitWidth(block.getWidth());
+                    imageView.setFitHeight(block.getHeight());
+                    Platform.runLater(() -> children.add(imageView));
+                    images.add(imageView);
+                }
+                Thread.sleep(100);
+                Platform.runLater(() -> children.removeAll(images));
+            }
+            return null;
+        }
+    }
+
+    private class Explosion extends Task<Void> {
+        private HashSet<GameBlock> damagedZone;
+        private ObservableList<Node> children;
+
+        public Explosion(HashSet<GameBlock> damagedZone, ObservableList<Node> children) {
+            this.damagedZone = damagedZone;
+            this.children = children;
+        }
+
+        @Override
+        protected Void call() throws Exception {
+            UnaryOperator<Node> operator = new UnaryOperator<Node>() {
+                @Override
+                public Node apply(Node node) {
+                    if (node instanceof RedBrick) {
+                        RedBrick block = (RedBrick) node;
+                        if (damagedZone.contains(block)) {
+                            Bonus bonus = block.generateBonus(children);
+                            final GrassBlock grassBlock = new GrassBlock((int) block.getX(), (int) block.getY(), (int) block.getWidth(),
+                                    (int) block.getHeight(), block.getVerticalIndex(), block.getHorizontalIndex());
+                            getBlockArray()[block.getVerticalIndex()][block.getHorizontalIndex()] = grassBlock;
+                            if (bonus != null)
+                                Platform.runLater(() -> children.add(bonus));
+                            return grassBlock;
+                        }
+                        return block;
+                    }
+                    return node;
+                }
+            };
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    children.replaceAll(operator);
+                    Enemy.updateMobs();
+                }
+            });
+            return null;
+        }
+    }
+
+    private class Killer extends Task<Void> {
+        Set<GameBlock> damagedZone;
+
+        public Killer(Set<GameBlock> damagedZone) {
+            this.damagedZone = damagedZone;
+        }
+
+        @Override
+        protected Void call() throws Exception {
+            try {
                 for (GameBlock block : damagedZone) {
                     for (Creature creature : Creature.getCreatures()) {
                         if (block.containsCreature(creature))
                             creature.decreaseLife();
                     }
                 }
-                return null;
+            } catch (ConcurrentModificationException e) {
+                e.printStackTrace();
             }
+            return null;
         }
     }
 }

@@ -5,20 +5,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-
-public class SingleGame {
+public class SingleGame extends Application {
 
     Scene scene;
 
@@ -35,6 +28,10 @@ public class SingleGame {
         scene = new Scene(hPane, winWidth, winHeigth);
         initListeners(gamePlayGround);
 
+        gamePlayGround.getPlayer().isAliveProperty().addListener(observable -> {
+
+        });
+
         Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());
         characteristics.setAlignment(Pos.CENTER);
         hPane.getChildren().addAll(characteristics, vPane);
@@ -47,16 +44,16 @@ public class SingleGame {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case UP:
-                        gamePlayGround.getPlayer().setSide(Side.TOP);
+                        gamePlayGround.getPlayer().setSide(Side.NORTH);
                         break;
                     case DOWN:
-                        gamePlayGround.getPlayer().setSide(Side.BOTTOM);
+                        gamePlayGround.getPlayer().setSide(Side.SOUTH);
                         break;
                     case LEFT:
-                        gamePlayGround.getPlayer().setSide(Side.LEFT);
+                        gamePlayGround.getPlayer().setSide(Side.WEST);
                         break;
                     case RIGHT:
-                        gamePlayGround.getPlayer().setSide(Side.RIGHT);
+                        gamePlayGround.getPlayer().setSide(Side.EAST);
                         break;
                     case SPACE:
                         gamePlayGround.putBomb();
