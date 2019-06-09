@@ -1,10 +1,9 @@
 package program;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -23,7 +22,7 @@ public class MainMenuController {
     }
 
     private void exitButtonAction(ActionEvent event) {
-        System.exit(0);
+        Platform.exit();
     }
 
     private void singleButtonAction(ActionEvent event) {
@@ -32,6 +31,6 @@ public class MainMenuController {
         stage.setTitle("Single game");
         stage.setScene(new SingleGame().start(screenBounds.getWidth(), screenBounds.getHeight() - 80));
         stage.centerOnScreen();
-        stage.setOnCloseRequest((e) -> System.exit(0));
+        stage.setOnCloseRequest((e) -> Platform.exit());
     }
 }
