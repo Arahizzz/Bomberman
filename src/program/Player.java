@@ -28,7 +28,7 @@ public class Player extends Creature {
     private static final double MAXSPEED = 1.5;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
-    private int currentCount = -1;
+    private int currentCount;
     private final IntegerProperty range = new SimpleIntegerProperty(1);
     private Task<Void> checker;
 
@@ -152,6 +152,7 @@ public class Player extends Creature {
     public void kill() {
         super.kill();
         checker.cancel();
+        isAliveProperty().set(false);
         Sounds.playLost();
     }
 

@@ -1,6 +1,8 @@
 package program;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -8,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class SingleGame {
 
@@ -26,14 +29,34 @@ public class SingleGame {
         scene = new Scene(hPane, winWidth, winHeigth);
         initListeners(gamePlayGround);
 
-        gamePlayGround.getPlayer().isAliveProperty().addListener(observable -> {
-
-        });
-
         Characteristics characteristics = new Characteristics(gamePlayGround.getPlayer());
         characteristics.setAlignment(Pos.CENTER);
         hPane.getChildren().addAll(characteristics, vPane);
+
+        gamePlayGround.getPlayer().isAliveProperty().addListener(observable -> {
+            showEndScreen("You have lost.");
+        });
+        Exit.hasBeenCollectedProperty().addListener(observable -> {
+            showEndScreen("You have won.");
+        });
+
         return scene;
+    }
+
+    public void showEndScreen(String text) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("GameOver.fxml"));
+
+            Pane pane = loader.load();
+            GameOver controller = loader.getController();
+            controller.setInfo(text);
+            Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
+
+            Stage stage = (Stage) scene.getWindow();
+            Platform.runLater(() -> stage.setScene(gameOver));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initListeners(GamePlayGround gamePlayGround) {
