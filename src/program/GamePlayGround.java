@@ -19,7 +19,7 @@ public class GamePlayGround {
     private Random random = new Random();
     private Player player;
     private int grassPercentage = 50;
-    private int averageMobsNumber = 15; // приблизна кількість кількість мобів
+    private int averageMobsNumber = 4; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
     int blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
     int perBlockChance = 100 / blocksPerMob;
@@ -35,10 +35,11 @@ public class GamePlayGround {
     }
 
     ObservableList<Node> children;
-    GamePlayGround(ObservableList<Node> children,int WinWidth, int WinHeight) {
+
+    GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight) {
         this.children=children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
-        blockSize =  Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
+        blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
         generateBlocks(grassPercentage); //set grass persantage
         spawn = generateSpawnPoint();
