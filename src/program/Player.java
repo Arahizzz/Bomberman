@@ -24,8 +24,8 @@ public class Player extends Creature {
         return speed.get();
     }
 
-    private DoubleProperty speed = new SimpleDoubleProperty(0.65);
-    private static final double MAXSPEED = 1.5;
+    private DoubleProperty speed = new SimpleDoubleProperty(1.5);
+    private static final double MAXSPEED = 3.0;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
     private int currentCount;
@@ -78,7 +78,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.02 : getSpeed());
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.025 : getSpeed());
     }
 
     public boolean isIsAlive() {
