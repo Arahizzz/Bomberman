@@ -363,8 +363,8 @@ public class GamePlayGround {
         int verticalIndex;
         int horizontalIndex;
         do {
-            verticalIndex = random.nextInt(blockNumberY - 1) + 1;
-            horizontalIndex = random.nextInt(blockNumberX - 1) + 1;
+            verticalIndex = random.nextInt(blockNumberY - 2) + 1;
+            horizontalIndex = random.nextInt(blockNumberX - 2) + 1;
         } while (verticalIndex % 2 == 0 & horizontalIndex % 2 == 0 & verticalIndex != spawn.getVerticalIndex() & horizontalIndex != spawn.getHorizontalIndex());
         RedBrick brick = new RedBrick(blockSize * horizontalIndex, verticalIndex * blockSize, blockSize, blockSize, verticalIndex, horizontalIndex);
         blockArray[verticalIndex][horizontalIndex] = brick;
