@@ -13,6 +13,7 @@ import javafx.scene.paint.ImagePattern;
 
 import javax.swing.*;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Player extends Creature {
     private static HashSet<Bonus> bonuses = Bonus.getBonuses();
@@ -79,7 +80,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.01 : getSpeed());
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.02 : getSpeed());
     }
 
     void startMovement() {
@@ -170,7 +171,7 @@ public class Player extends Creature {
     }
 
     class EnemyChecker extends SwingWorker<Void, Void> {
-        HashSet<Enemy> enemies = Enemy.getEnemies();
+        Set<Enemy> enemies = Enemy.getEnemies();
 
         @Override
         protected Void doInBackground() throws Exception {

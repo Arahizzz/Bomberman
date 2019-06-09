@@ -410,7 +410,7 @@ public class GamePlayGround {
         Bomb bomb = player.putBomb();
         if (bomb != null) {
             children.add(bomb);
-            bomb.start(children);
+            bomb.activate();
         }
     }
 
