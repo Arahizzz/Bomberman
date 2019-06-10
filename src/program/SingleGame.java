@@ -28,7 +28,7 @@ public class SingleGame {
         addCharacterisitcs(gamePlayGround.getPlayer());
         addEndListeners(gamePlayGround.getPlayer());
         Exit.hasBeenCollectedProperty().addListener(observable -> {
-            showEndScreen();
+            showEndScreen(true);
         });
 
         return scene;
@@ -53,22 +53,25 @@ public class SingleGame {
 
     private void addEndListeners(Player player) {
         player.isAliveProperty().addListener(observable -> {
-            showEndScreen();
+            showEndScreen(false);
         });
     }
 
-    public void showEndScreen() {
+    public void showEndScreen(boolean win) {
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("GameOver.fxml"));
 
             Pane pane = loader.load();
             GameOver controller = loader.getController();
-
+controller.initBackGroundImage(win);
             Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
 
             Stage stage = (Stage) scene.getWindow();
             Platform.runLater(() -> {
-                stage.setTitle("Game over");
+                if (win) stage.setTitle("Game win");
+                else stage.setTitle("Game over");
+
                 stage.setScene(gameOver);
             });
         } catch (Exception e) {
