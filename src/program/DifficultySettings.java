@@ -6,14 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class DifficultySettings {
 
-    @FXML
-    GridPane DifficultySettings;
     @FXML
     Button veryEasy;
     @FXML
@@ -27,16 +24,7 @@ public class DifficultySettings {
     @FXML
     Button menu;
 
-
-
-    @FXML
-    private BackgroundImage BIOver= new BackgroundImage(new Image("Menu/Bomberman.png",1920,1080,false,true),
-            BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-            BackgroundSize.DEFAULT);
-
-
     public void initialize() {
-
         veryEasy.setOnAction(event -> {
             SingleGame singleGame = new SingleGame(Difficulty.VERAYEASY);
             Scene scene = ((Node) event.getSource()).getScene();
