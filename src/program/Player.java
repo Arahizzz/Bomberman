@@ -47,14 +47,10 @@ public class Player extends Creature {
     }
 
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int ID) { //Point location - це координати блоку (лівий верхній кут)
-        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
         physX = getX();
         physY = getY();
-        this.ID = ID;
-
-    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int id) { //Point location - це координати блоку (лівий верхній кут)
-        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
-        this.id=id;
+        this.id = ID;
         startMovement();
     }
 
