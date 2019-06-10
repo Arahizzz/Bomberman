@@ -95,7 +95,7 @@ class Exit extends Bonus {
 
     @Override
     void activate(Player player) {
-        if (mobsKilled) {
+        if (isMobsKilled()) {
             super.activate(player);
             hasBeenCollected.set(true);
             Sounds.playVictory();
