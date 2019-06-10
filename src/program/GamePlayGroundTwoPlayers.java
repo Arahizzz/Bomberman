@@ -1,11 +1,9 @@
 package program;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePlayGroundTwoPlayers {
@@ -20,7 +18,7 @@ public class GamePlayGroundTwoPlayers {
     private Random random = new Random();
     private Player player1;
     private Player player2;
-    private int grassPercentage = 10;
+    private int grassPercentage = 50;
 
     public Player getPlayer1() {
         return player1;
@@ -53,6 +51,7 @@ public class GamePlayGroundTwoPlayers {
     }
 
     public void initPlayer1() {
+        Creature.getCreatures().clear();
         player1 = new Player(spawn1, blockArray, blockSize, children);
         children.add(player1);
     }
@@ -268,14 +267,6 @@ public class GamePlayGroundTwoPlayers {
 
     public Rectangle getElementAt(int row, int column) {
         return blockArray[row][column];
-    }
-
-    public void putBomb() {
-        Bomb bomb = player1.putBomb();
-        if (bomb != null) {
-            children.add(bomb);
-            bomb.activate();
-        }
     }
 
 }
