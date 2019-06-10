@@ -27,7 +27,8 @@ public class MainMenuController {
         exit.setOnAction(this::exitButtonAction);
         single.setOnAction(event -> {
             try {
-                Pane pane = FXMLLoader.load(getClass().getResource("DifficultySettings.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/program/DifficultySettings.fxml"));
+                Pane pane = loader.load();
                 Scene scene = ((Node) event.getSource()).getScene();
                 Stage stage = (Stage) scene.getWindow();
                 Platform.runLater(() -> stage.setTitle("Difficulty"));
