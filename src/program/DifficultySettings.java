@@ -30,14 +30,10 @@ public class DifficultySettings {
 
 
     @FXML
-    private BackgroundImage Background= new BackgroundImage(new Image("Menu/Bomberman.png",1920,1080,false,true),
+    private BackgroundImage BIOver= new BackgroundImage(new Image("Menu/Bomberman.png",1920,1080,false,true),
             BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
             BackgroundSize.DEFAULT);
 
-    @FXML
-    public void initBackGroundImage(){
-            DifficultySettings.setBackground(new Background(Background));
-    }
 
     public void initialize() {
         veryEasy.setOnAction(event -> {
