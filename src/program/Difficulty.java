@@ -11,9 +11,9 @@ public class Difficulty {
     int bonusPersantage;
     public static final Difficulty VERAYEASY = new Difficulty(10, 3, 1, 0.5, 0.01, 90, 70);
     public static final Difficulty EASY = new Difficulty(5, 2, 2, 0.7, 0.05, 70, 50);
-    public static final Difficulty NORMAL = new Difficulty(3, 1.75, 3, 1.2, 0.1, 35, 35);
-    public static final Difficulty HARD = new Difficulty(2, 1.5, 5, 1.75, 0.3, 70, 20);
-    public static final Difficulty INSANE = new Difficulty(1, 1.2, 7, 2.5, 0.5, 90, 7);
+    public static final Difficulty NORMAL = new Difficulty(3, 1.75, 3, 0.7, 0.1, 35, 35);
+    public static final Difficulty HARD = new Difficulty(2, 1.5, 5, 1.0, 0.3, 70, 20);
+    public static final Difficulty INSANE = new Difficulty(1, 1.2, 7, 1.25, 0.5, 90, 7);
     public static Difficulty current;
 
 
