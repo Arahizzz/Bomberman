@@ -61,12 +61,10 @@ public class GamePlayGround {
 
     public void initMobs(GrassBlock spawn) {
         Enemy.getEnemies().clear();
-        Platform.runLater(() -> {
-            final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
-            Enemy.setSpeed(difficulty.getMobSpeed());
-            Enemy.setTurnProbability(difficulty.getTurnProbabilty());
-            children.add(enemy);
-        });
+        final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
+        Enemy.setSpeed(difficulty.getMobSpeed());
+        Enemy.setTurnProbability(difficulty.getTurnProbabilty());
+        Platform.runLater(() -> children.add(enemy));
     }
 
     public void initPlayer() {
