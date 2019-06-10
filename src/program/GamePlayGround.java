@@ -303,14 +303,14 @@ public class GamePlayGround {
             if (line == 0) row = 1;
             else row = 11;
 
-            column = random.nextInt(15) + 1;
+            column = random.nextInt(13) + 2;
 
         } else { // horizontal
 
             if (line == 1) column = 1;
             else column = 15;
 
-            row = random.nextInt(11) + 1;
+            row = random.nextInt(9) + 2;
 
         }
 
