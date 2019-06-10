@@ -9,8 +9,13 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class TwoPlayersGame {
 
@@ -60,22 +65,41 @@ public class TwoPlayersGame {
 
     private void addEndListeners(Player player) {
         player.isAliveProperty().addListener(observable -> {
-            showEndScreen();
+            showEndScreen(player.getID());
         });
     }
 
-    public void showEndScreen() {
+    public void showEndScreen(int player) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("GameOver.fxml"));
 
             Pane pane = loader.load();
             GameOver controller = loader.getController();
 
+            if (player==1)player=2; else player=1;
+            
+            Media media = new  Media(new File("Textures/Menu/player" +player+".mp4").toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            MediaView mediaView = new MediaView(mediaPlayer);
+            pane.getChildren().add(mediaView);
+            mediaPlayer.play();
+            Sounds.playVictory();
+            mediaPlayer.setOnEndOfMedia(() -> {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        pane.getChildren().remove(mediaView);
+                    }
+                });
+            });
+
+
+            controller.initBackGroundImage(true);
             Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
 
             Stage stage = (Stage) scene.getWindow();
             Platform.runLater(() -> {
-                stage.setTitle("Game over");
+                stage.setTitle("Congratulations!");
                 stage.setScene(gameOver);
             });
         } catch (Exception e) {

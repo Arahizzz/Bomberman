@@ -52,12 +52,12 @@ public class GamePlayGroundTwoPlayers {
 
     public void initPlayer1() {
         Creature.getCreatures().clear();
-        player1 = new Player(spawn1, blockArray, blockSize, children);
+        player1 = new Player(spawn1, blockArray, blockSize, children,1);
         children.add(player1);
     }
 
     public void initPlayer2(){
-        player2 = new Player(spawn2, blockArray, blockSize, children);
+        player2 = new Player(spawn2, blockArray, blockSize, children,2);
         children.add(player2);
     }
 
@@ -194,7 +194,6 @@ public class GamePlayGroundTwoPlayers {
     }
 
     private GameBlock generateSpawnPoint2() {
-        System.out.println(spawn1.getHorizontalIndex()+" " + spawn1.getVerticalIndex());
        int column = Math.abs(blockNumberX-1-spawn1.getHorizontalIndex()) ;
        int row=Math.abs(blockNumberY-1-spawn1.getVerticalIndex());
 
