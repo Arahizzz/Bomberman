@@ -109,7 +109,7 @@ class StoneBrick extends GameBlock {
 class RedBrick extends GameBlock {
     private Exit exit;
 
-    private int bonusChance = 25;
+    public static int bonusChance = 25;
     Random random = new Random();
     public RedBrick(int x, int y, int width, int height, int horizontalIndex, int verticalIndex) {
         super(x, y, width, height, true, false, horizontalIndex, verticalIndex);
