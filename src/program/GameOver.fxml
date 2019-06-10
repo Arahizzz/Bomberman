@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-            prefWidth="600.0" styleClass="background" stylesheets="@GameOver.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="program.GameOver">
+            prefWidth="600.0" styleClass="background" stylesheets="@GameOver.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="program.GameOver">
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Text fx:id="info" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+             <Text fx:id="info" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: white;" text="Text">
                <VBox.margin>
-                   <Insets top="15.0"/>
+                   <Insets top="35.0"/>
                </VBox.margin>
             </Text>
             <Button fx:id="again" mnemonicParsing="false" text="Play Again">
