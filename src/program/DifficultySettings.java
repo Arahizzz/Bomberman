@@ -40,27 +40,42 @@ public class DifficultySettings {
     }
 
     public void initialize() {
+
         veryEasy.setOnAction(event -> {
-            SingleGame singleGame = new SingleGame();
+            SingleGame singleGame = new SingleGame(Difficulty.VERAYEASY);
             Scene scene = ((Node) event.getSource()).getScene();
             Stage stage = (Stage) scene.getWindow();
             Platform.runLater(() -> stage.setTitle("Single game"));
             stage.setScene(singleGame.start(scene.getWidth(), scene.getHeight()));
         });
-        easy.setOnAction(event -> Platform.exit());
-        normal.setOnAction(event -> {
-            try {
-                Pane pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
-                Scene scene = ((Node) event.getSource()).getScene();
-                Stage stage = (Stage) scene.getWindow();
-                Platform.runLater(() -> stage.setTitle("Bomberman"));
-                stage.setScene(new Scene(pane, scene.getWidth(), scene.getHeight()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        easy.setOnAction(event -> {
+            SingleGame singleGame = new SingleGame(Difficulty.EASY);
+            Scene scene = ((Node) event.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            Platform.runLater(() -> stage.setTitle("Single game"));
+            stage.setScene(singleGame.start(scene.getWidth(), scene.getHeight()));
         });
-        hard.setOnAction(event -> Platform.exit());
-        insane.setOnAction(event -> Platform.exit());
+        normal.setOnAction(event -> {
+            SingleGame singleGame = new SingleGame(Difficulty.NORMAL);
+            Scene scene = ((Node) event.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            Platform.runLater(() -> stage.setTitle("Single game"));
+            stage.setScene(singleGame.start(scene.getWidth(), scene.getHeight()));
+        });
+        hard.setOnAction(event -> {
+            SingleGame singleGame = new SingleGame(Difficulty.HARD);
+            Scene scene = ((Node) event.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            Platform.runLater(() -> stage.setTitle("Single game"));
+            stage.setScene(singleGame.start(scene.getWidth(), scene.getHeight()));
+        });
+        insane.setOnAction(event -> {
+            SingleGame singleGame = new SingleGame(Difficulty.INSANE);
+            Scene scene = ((Node) event.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            Platform.runLater(() -> stage.setTitle("Single game"));
+            stage.setScene(singleGame.start(scene.getWidth(), scene.getHeight()));
+        });
         menu.setOnAction(event -> {
             try {
                 Pane pane = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
