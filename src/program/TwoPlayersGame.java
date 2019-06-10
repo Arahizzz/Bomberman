@@ -102,13 +102,38 @@ public class TwoPlayersGame {
                         break;
                     case SPACE:
                         gamePlayGround.putBomb();
+                        break;
+                    case A:
+                        gamePlayGround.getPlayer2().setSide(Side.WEST);
+                        break;
+                    case S:
+                        gamePlayGround.getPlayer2().setSide(Side.SOUTH);
+                        break;
+                    case D:
+                        gamePlayGround.getPlayer2().setSide(Side.EAST);
+                        break;
+                    case W:
+                        gamePlayGround.getPlayer2().setSide(Side.NORTH);
+                        break;
                 }
             }
         });
         scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                gamePlayGround.getPlayer1().setSide(Side.NONE);
+                switch (event.getCode()) {
+                    case UP:
+                    case DOWN:
+                    case LEFT:
+                    case RIGHT:
+                        gamePlayGround.getPlayer1().setSide(Side.NONE);
+                        break;
+                    case A:
+                    case S:
+                    case D:
+                    case W:
+                        gamePlayGround.getPlayer2().setSide(Side.NONE);
+                }
             }
         });
     }
