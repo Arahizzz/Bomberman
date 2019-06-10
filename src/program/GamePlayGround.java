@@ -45,6 +45,8 @@ public class GamePlayGround {
         averageMobsNumber=difficulty.getAverageMobNumber();
         mobsCreated=0;
         countGrassBlocks=0;
+        blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
+        perBlockChance = 100 / blocksPerMob;
 
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
