@@ -46,6 +46,7 @@ public class GamePlayGround {
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
         generateExit();
         initMobs();
+        Enemy.updateMobs();
     }
 
     public void initMobs(GrassBlock spawn) {
