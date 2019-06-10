@@ -39,7 +39,8 @@ public class GamePlayGroundTwoPlayers {
     ObservableList<Node> children;
 
     GamePlayGroundTwoPlayers(ObservableList<Node> children, double WinWidth, double WinHeight) {
-        this.children=children;
+        Exit.exit = null;
+        this.children = children;
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
@@ -52,12 +53,12 @@ public class GamePlayGroundTwoPlayers {
 
     public void initPlayer1() {
         Creature.getCreatures().clear();
-        player1 = new Player(spawn1, blockArray, blockSize, children,1);
+        player1 = new Player(spawn1, blockArray, blockSize, children);
         children.add(player1);
     }
 
-    public void initPlayer2(){
-        player2 = new Player(spawn2, blockArray, blockSize, children,2);
+    public void initPlayer2() {
+        player2 = new Player(spawn2, blockArray, blockSize, children);
         children.add(player2);
     }
 
@@ -194,8 +195,9 @@ public class GamePlayGroundTwoPlayers {
     }
 
     private GameBlock generateSpawnPoint2() {
-       int column = Math.abs(blockNumberX-1-spawn1.getHorizontalIndex()) ;
-       int row=Math.abs(blockNumberY-1-spawn1.getVerticalIndex());
+        System.out.println(spawn1.getHorizontalIndex() + " " + spawn1.getVerticalIndex());
+        int column = Math.abs(blockNumberX - 1 - spawn1.getHorizontalIndex());
+        int row = Math.abs(blockNumberY - 1 - spawn1.getVerticalIndex());
 
         blockArray[row][column] = new GrassBlock(column * blockSize, row * blockSize, blockSize, blockSize, row, column);
         //spawn point

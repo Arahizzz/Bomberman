@@ -211,6 +211,7 @@ public class Bomb extends Entity {
                 @Override
                 public void run() {
                     children.replaceAll(operator);
+                    Enemy.updateMobs();
                 }
             });
             return null;

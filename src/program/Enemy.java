@@ -3,6 +3,7 @@ package program;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
 
@@ -117,7 +118,6 @@ public class Enemy extends Creature {
     @Override
     public void kill() {
         enemies.remove(this);
-        Enemy.updateMobs();
         super.kill();
     }
 
@@ -130,7 +130,7 @@ public class Enemy extends Creature {
             for (Enemy enemy : enemies) {
                 enemy.checkIfFree();
             }
-        } else
+        } else if (Exit.exit != null)
             Exit.activatePortal();
     }
 
@@ -138,6 +138,11 @@ public class Enemy extends Creature {
         if (!activated) {
             freeMob();
         }
+    }
+
+    @Override
+    Bounds getBounds() {
+        return getBoundsInLocal();
     }
 
     @Override

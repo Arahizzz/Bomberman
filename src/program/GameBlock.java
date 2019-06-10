@@ -78,7 +78,7 @@ abstract public class GameBlock extends Rectangle {
     }
 
     public boolean containsCreature(Creature creature) {
-        return intersects(creature.getBoundsInLocal());
+        return intersects(creature.getBounds());
     }
 
     public boolean containsEntity() {
