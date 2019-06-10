@@ -27,7 +27,7 @@ public class DifficultySettings {
         Button menu;
 
         @FXML
-        private BackgroundImage Background= new BackgroundImage(new Image("Menu/Bomberman.jpg",1920,1080,false,true),
+        private BackgroundImage Background= new BackgroundImage(new Image("Menu/Bomberman.png",1920,1080,false,true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
 
