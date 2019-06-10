@@ -24,7 +24,7 @@ public class Player extends Creature {
         return speed.get();
     }
 
-    private DoubleProperty speed = new SimpleDoubleProperty(1.0);
+    private DoubleProperty speed = new SimpleDoubleProperty(3.0);
     private static final double MAXSPEED = 2.5;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
@@ -41,7 +41,7 @@ public class Player extends Creature {
     }
 
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
-        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
         startMovement();
     }
 

@@ -28,6 +28,7 @@ public class SingleGame {
         addCharacterisitcs(gamePlayGround.getPlayer());
         addEndListeners(gamePlayGround.getPlayer());
         Exit.hasBeenCollectedProperty().addListener(observable -> {
+            showEndScreen();
         });
 
         return scene;
@@ -62,7 +63,7 @@ public class SingleGame {
 
             Pane pane = loader.load();
             GameOver controller = loader.getController();
-           // controller.setInfo();
+
             Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
 
             Stage stage = (Stage) scene.getWindow();
