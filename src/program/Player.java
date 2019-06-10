@@ -125,6 +125,7 @@ public class Player extends Creature {
 
             @Override
             public void handle(long now) {
+                calculateScale(now);
                 updateBlock();
                 checkBonuses();
                 if (getSide() == Side.NORTH && northIsClear()) {
@@ -153,7 +154,6 @@ public class Player extends Creature {
                     }
                     lastUpdate = now;
                 }
-                calculateScale(now);
             }
         };
         animation.start();

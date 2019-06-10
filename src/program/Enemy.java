@@ -44,14 +44,16 @@ public class Enemy extends Creature {
     void startMovement() {
         animation = new AnimationTimer() {
             private long lastUpdate = 0;
+            private long moveUpdate = 0;
             @Override
             public void handle(long now) {
-                if (now - lastUpdate >= 15_000) {
+                if (now - moveUpdate >= 15_000) {
                     updateBlock();
                     if (frontIsClear()) {
                         moveForward();
                     } else
                         turnBack();
+                    moveUpdate = now;
                 }
                 if (now - lastUpdate >= 150_000_000) {
                     switch (getSide()) {
