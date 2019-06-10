@@ -4,7 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:id="GameOver" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@DifficultySettings.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="program.DifficultySettings">
+<GridPane alignment="center" hgap="10" styleClass="background" stylesheets="@DifficultySettings.css" vgap="10"
+          xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="program.DifficultySettings">
 
     <children>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@DifficultySettings.css" prefHeight="150.0" prefWidth="400.0">
@@ -69,7 +71,7 @@
                         <Insets bottom="10.0" />
                     </VBox.margin>
                 </Button>
-                <Button fx:id="menu" mnemonicParsing="false">
+                <Button fx:id="menu" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false">
                     <graphic>
                         <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -87,4 +89,4 @@
             </GridPane.margin>
         </VBox>
     </children>
-</BorderPane>
+</GridPane>
