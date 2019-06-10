@@ -58,7 +58,7 @@ public class GamePlayGround {
 
     public void initPlayer() {
         Creature.getCreatures().clear();
-        player = new Player(spawn, blockArray, blockSize, children);
+        player = new Player(spawn, blockArray, blockSize, children, 1);
         children.add(player);
     }
 

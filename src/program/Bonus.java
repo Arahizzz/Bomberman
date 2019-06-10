@@ -31,6 +31,7 @@ public abstract class Bonus extends Entity {
 
     void activate(Player player) {
         Platform.runLater(() -> getChildren().remove(this));
+        Sounds.playBonus();
         bonuses.remove(this);
     }
 
