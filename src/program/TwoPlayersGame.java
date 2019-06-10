@@ -92,7 +92,7 @@ if (player==1)player=2; else player=1;
             });
 
 
-           
+
             Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
 
             Stage stage = (Stage) scene.getWindow();
