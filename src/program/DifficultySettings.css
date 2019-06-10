@@ -4,3 +4,7 @@
 .button:hover {
     -fx-cursor: hand;
 }
+
+.background {
+    -fx-background-image: url('/Menu/Bomberman.png');
+}

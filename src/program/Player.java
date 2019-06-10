@@ -22,16 +22,12 @@ public class Player extends Creature {
     private static final int HEIGHT = 50;
     private double physX;
     private double physY;
-    private int ID;
+    private int id;
 
     private AnimationTimer animation;
 
     public double getSpeed() {
         return speed.get();
-    }
-
-    public int getID() {
-        return ID;
     }
 
     private DoubleProperty speed = new SimpleDoubleProperty(1.75);
@@ -55,6 +51,19 @@ public class Player extends Creature {
         physX = getX();
         physY = getY();
         this.ID = ID;
+
+    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int id) { //Point location - це координати блоку (лівий верхній кут)
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
+        this.id=id;
+        startMovement();
+    }
+
+    public int getID(){
+        return this.id;
+    }
+
+    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
         startMovement();
     }
 

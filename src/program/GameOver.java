@@ -1,5 +1,4 @@
 package program;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,7 +40,7 @@ public class GameOver {
 
     public void initialize() {
         again.setOnAction(event -> {
-            SingleGame singleGame = new SingleGame();
+            SingleGame singleGame = new SingleGame(Difficulty.current);
             Scene scene = ((Node) event.getSource()).getScene();
             Stage stage = (Stage) scene.getWindow();
             Platform.runLater(() -> stage.setTitle("Single game"));
