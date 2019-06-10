@@ -14,6 +14,7 @@ public class Sounds {
     private static MediaPlayer lost = new MediaPlayer(new Media(new File("Sounds\\GameLost.wav").toURI().toString()));
     private static MediaPlayer victory = new MediaPlayer(new Media(new File("Sounds\\VıctoryVolume.wav").toURI().toString()));
 
+
     public static void playTick() {
         tick.seek(Duration.ZERO);
         tick.play();

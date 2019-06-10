@@ -71,13 +71,11 @@ public class TwoPlayersGame {
 
     public void showEndScreen(int player) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("GameOver.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("mainMenu.fxml"));
 
             Pane pane = loader.load();
-            GameOver controller = loader.getController();
 
-            if (player==1)player=2; else player=1;
-            
+if (player==1)player=2; else player=1;
             Media media = new  Media(new File("Textures/Menu/player" +player+".mp4").toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(media);
             MediaView mediaView = new MediaView(mediaPlayer);
@@ -94,7 +92,7 @@ public class TwoPlayersGame {
             });
 
 
-            controller.initBackGroundImage(true);
+           
             Scene gameOver = new Scene(pane, scene.getWidth(), scene.getHeight());
 
             Stage stage = (Stage) scene.getWindow();
