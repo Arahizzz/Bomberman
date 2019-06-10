@@ -21,10 +21,6 @@ public class GameOver {
     @FXML
     Button exit;
 
-    public void setInfo(String text) {
-        info.setText(text);
-    }
-
     public void initialize() {
         again.setOnAction(event -> {
             SingleGame singleGame = new SingleGame();
