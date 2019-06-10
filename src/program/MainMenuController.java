@@ -16,9 +16,13 @@ public class MainMenuController {
     @FXML
     Button single;
 
+    @FXML
+    Button multi;
+
     public void initialize() {
         exit.setOnAction(this::exitButtonAction);
         single.setOnAction(this::singleButtonAction);
+        multi.setOnAction(this::multiButtonAction);
     }
 
     private void exitButtonAction(ActionEvent event) {
@@ -33,4 +37,14 @@ public class MainMenuController {
         stage.centerOnScreen();
         stage.setOnCloseRequest((e) -> Platform.exit());
     }
+
+    private void multiButtonAction(ActionEvent event) {
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        Stage stage = (Stage) multi.getScene().getWindow();
+        stage.setTitle("Two players game");
+        stage.setScene(new TwoPlayersGame().start(screenBounds.getWidth(), screenBounds.getHeight() - 80));
+        stage.centerOnScreen();
+        stage.setOnCloseRequest((e) -> Platform.exit());
+    }
+
 }
