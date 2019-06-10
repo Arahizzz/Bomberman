@@ -37,6 +37,8 @@ public class GamePlayGround {
     ObservableList<Node> children;
 
     GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight, Difficulty difficulty) {
+        Enemy.getEnemies().clear();
+        Creature.getCreatures().clear();
         this.children=children;
         this.difficulty = difficulty;
         Difficulty.current = difficulty;
@@ -60,7 +62,6 @@ public class GamePlayGround {
     }
 
     public void initMobs(GrassBlock spawn) {
-        Enemy.getEnemies().clear();
         final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
         Enemy.setSpeed(difficulty.getMobSpeed());
         Enemy.setTurnProbability(difficulty.getTurnProbabilty());
@@ -68,7 +69,6 @@ public class GamePlayGround {
     }
 
     public void initPlayer() {
-        Creature.getCreatures().clear();
         player = new Player(spawn, blockArray, blockSize, children, 1);
         player.setLife(difficulty.getLife());
         player.setSpeed(difficulty.getPlayerSpeed());
