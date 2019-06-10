@@ -24,8 +24,8 @@ public class Player extends Creature {
         return speed.get();
     }
 
-    private DoubleProperty speed = new SimpleDoubleProperty(3.0);
-    private static final double MAXSPEED = 2.5;
+    private DoubleProperty speed = new SimpleDoubleProperty(1.75);
+    private static final double MAXSPEED = 3.5;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
     private int currentCount;
@@ -41,7 +41,7 @@ public class Player extends Creature {
     }
 
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
-        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
+        super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
         startMovement();
     }
 
@@ -92,7 +92,36 @@ public class Player extends Creature {
     void startMovement() {
         setAnimationFront();
         animation = new AnimationTimer() {
+            private static final double preferredFPS = 60;
             private long lastUpdate = 0;
+            private long previousTime;
+            private float secondsElapsedSinceLastFpsUpdate = 0f;
+            private int framesSinceLastFpsUpdate = 0;
+            private double scale = 1;
+
+            private double getSpeed() {
+                return Player.this.getSpeed() * scale;
+            }
+
+            private void calculateScale(long currentTime) {
+                if (previousTime == 0) {
+                    previousTime = currentTime;
+                    return;
+                }
+
+                float secondsElapsed = (currentTime - previousTime) / 1e9f;
+                previousTime = currentTime;
+
+
+                secondsElapsedSinceLastFpsUpdate += secondsElapsed;
+                framesSinceLastFpsUpdate++;
+                if (secondsElapsedSinceLastFpsUpdate >= 0.5f) {
+                    int fps = Math.round(framesSinceLastFpsUpdate / secondsElapsedSinceLastFpsUpdate);
+                    scale = preferredFPS / fps;
+                    secondsElapsedSinceLastFpsUpdate = 0;
+                    framesSinceLastFpsUpdate = 0;
+                }
+            }
 
             @Override
             public void handle(long now) {
@@ -124,6 +153,7 @@ public class Player extends Creature {
                     }
                     lastUpdate = now;
                 }
+                calculateScale(now);
             }
         };
         animation.start();

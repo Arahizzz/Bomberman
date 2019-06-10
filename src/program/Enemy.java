@@ -46,11 +46,13 @@ public class Enemy extends Creature {
             private long lastUpdate = 0;
             @Override
             public void handle(long now) {
-                updateBlock();
-                if (frontIsClear()) {
-                    moveForward();
-                } else
-                    turnBack();
+                if (now - lastUpdate >= 15_000) {
+                    updateBlock();
+                    if (frontIsClear()) {
+                        moveForward();
+                    } else
+                        turnBack();
+                }
                 if (now - lastUpdate >= 150_000_000) {
                     switch (getSide()) {
                         case NORTH:
