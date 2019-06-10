@@ -12,18 +12,18 @@ public class GamePlayGround {
     private GameBlock[][] blockArray;
 
     private int blockSize;
-
     private int blockNumberY = 13;
     private int blockNumberX = 17;
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
-    private int grassPercentage = 50;
-    private int averageMobsNumber = 15; // приблизна кількість кількість мобів
+    private int grassPercentage = 95;
+    private int averageMobsNumber = 5; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
     int blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
     int perBlockChance = 100 / blocksPerMob;
     int mobsCreated = 0;
+    Difficulty difficulty;
     ArrayList<GrassBlock> mobBlocks = new ArrayList<GrassBlock>();
 
     public Player getPlayer() {
@@ -36,27 +36,42 @@ public class GamePlayGround {
 
     ObservableList<Node> children;
 
-    GamePlayGround(ObservableList<Node> children, int WinWidth, int WinHeight) {
-        this.children = children;
+    GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight, Difficulty difficulty) {
+        Enemy.getEnemies().clear();
+        Creature.getCreatures().clear();
+        this.children=children;
+        this.difficulty = difficulty;
+        Difficulty.current = difficulty;
+        RedBrick.bonusChance = difficulty.getBonusPersantage();
+        grassPercentage = difficulty.getGrassPersantage();
+        averageMobsNumber = difficulty.getAverageMobNumber();
+        mobsCreated = 0;
+        countGrassBlocks = 0;
+        blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
+        perBlockChance = 100 / blocksPerMob;
+
         blockArray = new GameBlock[blockNumberY][blockNumberX];
-        blockSize = Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
+        blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
         generateBlocks(grassPercentage); //set grass persantage
         spawn = generateSpawnPoint();
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
         generateExit();
         initMobs();
+        Enemy.updateMobs();
     }
 
     public void initMobs(GrassBlock spawn) {
-        Platform.runLater(() -> {
-            final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
-            children.add(enemy);
-        });
+        final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
+        Enemy.setSpeed(difficulty.getMobSpeed());
+        Enemy.setTurnProbability(difficulty.getTurnProbabilty());
+        Platform.runLater(() -> children.add(enemy));
     }
 
     public void initPlayer() {
-        player = new Player(spawn, blockArray, blockSize, children);
+        player = new Player(spawn, blockArray, blockSize, children, 1);
+        player.setLife(difficulty.getLife());
+        player.setSpeed(difficulty.getPlayerSpeed());
         children.add(player);
     }
 
@@ -286,14 +301,14 @@ public class GamePlayGround {
             if (line == 0) row = 1;
             else row = 11;
 
-            column = random.nextInt(15) + 1;
+            column = random.nextInt(13) + 2;
 
         } else { // horizontal
 
             if (line == 1) column = 1;
             else column = 15;
 
-            row = random.nextInt(11) + 1;
+            row = random.nextInt(9) + 2;
 
         }
 
@@ -363,8 +378,8 @@ public class GamePlayGround {
         int verticalIndex;
         int horizontalIndex;
         do {
-            verticalIndex = random.nextInt(blockNumberY - 1) + 1;
-            horizontalIndex = random.nextInt(blockNumberX - 1) + 1;
+            verticalIndex = random.nextInt(blockNumberY - 2) + 1;
+            horizontalIndex = random.nextInt(blockNumberX - 2) + 1;
         } while (verticalIndex % 2 == 0 & horizontalIndex % 2 == 0 & verticalIndex != spawn.getVerticalIndex() & horizontalIndex != spawn.getHorizontalIndex());
         RedBrick brick = new RedBrick(blockSize * horizontalIndex, verticalIndex * blockSize, blockSize, blockSize, verticalIndex, horizontalIndex);
         blockArray[verticalIndex][horizontalIndex] = brick;
@@ -404,14 +419,6 @@ public class GamePlayGround {
 
     public Rectangle getElementAt(int row, int column) {
         return blockArray[row][column];
-    }
-
-    public void putBomb() {
-        Bomb bomb = player.putBomb();
-        if (bomb != null) {
-            children.add(bomb);
-            bomb.activate();
-        }
     }
 
 }

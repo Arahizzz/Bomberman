@@ -78,7 +78,7 @@ abstract public class GameBlock extends Rectangle {
     }
 
     public boolean containsCreature(Creature creature) {
-        return intersects(creature.getBoundsInLocal());
+        return intersects(creature.getBounds());
     }
 
     public boolean containsEntity() {
@@ -97,8 +97,8 @@ abstract public class GameBlock extends Rectangle {
 
 class StoneBrick extends GameBlock {
 
-    public StoneBrick(int x, int y, int width, int height, int horizontalIndex, int verticalIndex) {
-        super(x, y, width, height, false, false, horizontalIndex, verticalIndex);
+    public StoneBrick(int x, int y, int width, int height, int verticalIndex, int horizontalIndex) {
+        super(x, y, width, height, false, false, verticalIndex, horizontalIndex);
         setStroke(Color.BLACK);
         Image image = new Image("Blocks\\SolidBlock.png");
         setFill(new ImagePattern(image));
@@ -109,10 +109,11 @@ class StoneBrick extends GameBlock {
 class RedBrick extends GameBlock {
     private Exit exit;
 
-    private int bonusChance = 25;
+    public static int bonusChance = 25;
     Random random = new Random();
-    public RedBrick(int x, int y, int width, int height, int horizontalIndex, int verticalIndex) {
-        super(x, y, width, height, true, false, horizontalIndex, verticalIndex);
+
+    public RedBrick(int x, int y, int width, int height, int verticalIndex, int horizontalIndex) {
+        super(x, y, width, height, true, false, verticalIndex, horizontalIndex);
         setStroke(Color.BLACK);
         Image image = new Image("Blocks\\ExplodableBlock.png");
         setFill(new ImagePattern(image));
@@ -143,8 +144,8 @@ class RedBrick extends GameBlock {
 
 class GrassBlock extends GameBlock {
 
-    public GrassBlock(int x, int y, int width, int height, int horizontalIndex, int verticalIndex) {
-        super(x, y, width, height, false, true, horizontalIndex, verticalIndex);
+    public GrassBlock(int x, int y, int width, int height, int verticalIndex, int horizontalIndex) {
+        super(x, y, width, height, false, true, verticalIndex, horizontalIndex);
         setStroke(Color.BLACK);
 
         Image image = new Image("Blocks\\BackgroundTile.png");

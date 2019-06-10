@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane fx:id="GameOver" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="background" stylesheets="@GameOver.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="program.GameOver">
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" stylesheets="@GameOver.css" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="again" mnemonicParsing="false">
+                <graphic>
+                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="/Menu/playagain.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </Button>
+            <Button fx:id="menu" mnemonicParsing="false">
+                <graphic>
+                    <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="/Menu/MainMenu.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </Button>
+             <Button fx:id="exit" mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="">
+                 <graphic>
+                 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                         <Image url="/Menu/exit.png" />
+                     </image>
+                 </ImageView>
+                 </graphic>
+                 <VBox.margin>
+                     <Insets top="15.0" />
+                 </VBox.margin>
+             </Button>
+         </children>
+         <opaqueInsets>
+             <Insets />
+         </opaqueInsets>
+      </VBox>
+   </center>
+</BorderPane>

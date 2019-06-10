@@ -6,31 +6,41 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Player extends Creature {
     private BooleanProperty isAlive = new SimpleBooleanProperty(true);
     private static HashSet<Bonus> bonuses = Bonus.getBonuses();
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
+    private double physX;
+    private double physY;
+    private int ID;
 
-    private AnimationTimer movement;
     private AnimationTimer animation;
 
     public double getSpeed() {
         return speed.get();
     }
 
-    private DoubleProperty speed = new SimpleDoubleProperty(0.65);
-    private static final double MAXSPEED = 3.0;
+    public int getID() {
+        return ID;
+    }
+
+    private DoubleProperty speed = new SimpleDoubleProperty(1.75);
+    private static final double MAXSPEED = 3.5;
 
     private final IntegerProperty maxCount = new SimpleIntegerProperty(1);
-    private int currentCount = -1;
+    private int currentCount;
     private final IntegerProperty range = new SimpleIntegerProperty(1);
+    private Task<Void> checker;
 
     public DoubleProperty speedProperty() {
         return speed;
@@ -40,8 +50,11 @@ public class Player extends Creature {
         Platform.runLater(() -> speed.setValue(value));
     }
 
-    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
+    Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children, int ID) { //Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 3);
+        physX = getX();
+        physY = getY();
+        this.ID = ID;
         startMovement();
     }
 
@@ -78,7 +91,7 @@ public class Player extends Creature {
     }
 
     public void increaseSpeed() {
-        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.02 : getSpeed());
+        setSpeed(getSpeed() < MAXSPEED ? getSpeed() + 0.025 : getSpeed());
     }
 
     public boolean isIsAlive() {
@@ -90,54 +103,126 @@ public class Player extends Creature {
     }
 
     void startMovement() {
-        {
-            new Bomb(this, null, 0, null);
-            new Sounds();
-        }
         setAnimationFront();
-        movement = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                updateBlock();
-                checkBonuses();
-                if (getSide() == Side.NORTH && northIsClear()) {
-                    setY(getY() - getSpeed());
-                } else if (getSide() == Side.SOUTH && southIsClear()) {
-                    setY(getY() + getSpeed());
-                } else if (getSide() == Side.WEST && westIsClear()) {
-                    setX(getX() - getSpeed());
-                } else if (getSide() == Side.EAST && eastIsClear()) {
-                    setX(getX() + getSpeed());
-                }
-            }
-        };
-        movement.start();
         animation = new AnimationTimer() {
-            private long lastUpdate = 0;
+            private Runnable updater;
+            private Runnable renderer;
+            private Runnable animator;
+            private Consumer<Float> interpolator;
+
+            {
+                interpolator = new Consumer<Float>() {
+                    @Override
+                    public void accept(Float alpha) {
+                        if (getSide() == Side.NORTH && northIsClear())
+                            setTranslateY(-getSpeed() * alpha);
+                        else if (getSide() == Side.SOUTH && southIsClear())
+                            setTranslateY(getSpeed() * alpha);
+                        else if (getSide() == Side.WEST && westIsClear())
+                            setTranslateX(-getSpeed() * alpha);
+                        else if (getSide() == Side.EAST && eastIsClear())
+                            setTranslateX(getSpeed() * alpha);
+                    }
+                };
+
+                updater = new Runnable() {
+                    @Override
+                    public void run() {
+                        updateBlock();
+                        checkBonuses();
+                        if (getSide() == Side.NORTH && northIsClear())
+                            physY = physY - getSpeed();
+                        else if (getSide() == Side.SOUTH && southIsClear())
+                            physY = physY + getSpeed();
+                        else if (getSide() == Side.WEST && westIsClear())
+                            physX = physX - getSpeed();
+                        else if (getSide() == Side.EAST && eastIsClear())
+                            physX = physX + getSpeed();
+                    }
+                };
+
+                renderer = new Runnable() {
+                    @Override
+                    public void run() {
+                        setTranslateX(0);
+                        setTranslateY(0);
+                        setX(physX);
+                        setY(physY);
+                    }
+                };
+
+                animator = new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (getSide()) {
+                            case NORTH:
+                                setAnimationBack();
+                                break;
+                            case WEST:
+                                setAnimationLeft();
+                                break;
+                            case SOUTH:
+                                setAnimationFront();
+                                break;
+                            case EAST:
+                                setAnimationRight();
+                        }
+                    }
+                };
+            }
+
+            private static final float timeStep = 0.0166f;
+            private float accumulatedTime = 0;
+            private long previousTime = 0;
+            private long lastUpdate;
 
             @Override
-            public void handle(long now) {
-                if (now - lastUpdate >= 150_000_000) {
-                    switch (getSide()) {
-                        case NORTH:
-                            setAnimationBack();
-                            break;
-                        case SOUTH:
-                            setAnimationFront();
-                            break;
-                        case EAST:
-                            setAnimationRight();
-                            break;
-                        case WEST:
-                            setAnimationLeft();
-                            break;
-                    }
-                    lastUpdate = now;
+            public void handle(long currentTime) {
+                if (currentTime - lastUpdate >= 150_000_000) {
+                    animator.run();
+                    lastUpdate = currentTime;
                 }
+
+                if (previousTime == 0) {
+                    previousTime = currentTime;
+                    return;
+                }
+
+                float secondsElapsed = (currentTime - previousTime) / 1e9f;
+                float secondsElapsedCapped = Math.min(secondsElapsed, 0.05f);
+                accumulatedTime += secondsElapsedCapped;
+                previousTime = currentTime;
+
+                if (accumulatedTime < timeStep) {
+                    float remainderOfTimeStepSincePreviousInterpolation =
+                            timeStep - (accumulatedTime - secondsElapsed);
+                    float alphaInRemainderOfTimeStep =
+                            secondsElapsed / remainderOfTimeStepSincePreviousInterpolation;
+                    interpolator.accept(alphaInRemainderOfTimeStep);
+                    return;
+                }
+
+                while (accumulatedTime >= 2 * timeStep) {
+                    updater.run();
+                    accumulatedTime -= timeStep;
+                }
+                renderer.run();
+                updater.run();
+                accumulatedTime -= timeStep;
+                float alpha = accumulatedTime / timeStep;
+                interpolator.accept(alpha);
+            }
+
+            @Override
+            public void stop() {
+                previousTime = 0;
+                accumulatedTime = 0;
+                super.stop();
             }
         };
         animation.start();
-        Thread enemyChecker = new Thread(new EnemyChecker());
+        checker = new EnemyChecker();
+        Thread enemyChecker = new Thread(checker);
         enemyChecker.setDaemon(true);
         enemyChecker.start();
     }
@@ -150,16 +235,27 @@ public class Player extends Creature {
 
     private void checkBonuses() {
         for (Bonus bonus : bonuses) {
-            if (bonus.intersects(getBoundsInLocal())) {
+            if (bonus.intersects(getBounds())) {
                 bonus.activate(this);
                 break;
             }
         }
     }
 
+    public Bounds getBounds() {
+        return new Rectangle(physX, physY, WIDTH, HEIGHT).getBoundsInLocal();
+    }
+
     @Override
-    void cancelAnimations() {
-        movement.stop();
+    public void kill() {
+        super.kill();
+        checker.cancel();
+        isAliveProperty().set(false);
+        Sounds.playLost();
+    }
+
+    @Override
+    void stopAnimations() {
         animation.stop();
     }
 
@@ -181,8 +277,12 @@ public class Player extends Creature {
     }
 
 
-    public Bomb putBomb() {
-        return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
+    public void putBomb() {
+        Bomb bomb = Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
+        if (bomb != null) {
+            getChildren().add(bomb);
+            bomb.activate();
+        }
     }
 
     class EnemyChecker extends Task<Void> {

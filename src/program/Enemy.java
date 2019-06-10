@@ -3,6 +3,7 @@ package program;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
 
@@ -17,7 +18,6 @@ public class Enemy extends Creature {
     private static final int HEIGHT = 50;
     private boolean activated = false;
     private static double turnProbability = 0.05;
-    private AnimationTimer movement;
     private AnimationTimer animation;
 
     static {
@@ -29,6 +29,22 @@ public class Enemy extends Creature {
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
         enemies.add(this);
         initAnimations();
+    }
+
+    public static double getTurnProbability() {
+        return turnProbability;
+    }
+
+    public static void setTurnProbability(double turnProbability) {
+        Enemy.turnProbability = turnProbability;
+    }
+
+    public static double getSpeed() {
+        return speed;
+    }
+
+    public static void setSpeed(double speed) {
+        Enemy.speed = speed;
     }
 
     private void initAnimations() {
@@ -43,21 +59,19 @@ public class Enemy extends Creature {
     }
 
     void startMovement() {
-        movement = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                updateBlock();
-                if (frontIsClear()) {
-                    moveForward();
-                } else
-                    turnBack();
-            }
-        };
-        movement.start();
         animation = new AnimationTimer() {
             private long lastUpdate = 0;
+            private long moveUpdate = 0;
             @Override
             public void handle(long now) {
+                if (now - moveUpdate >= 15_000) {
+                    updateBlock();
+                    if (frontIsClear()) {
+                        moveForward();
+                    } else
+                        turnBack();
+                    moveUpdate = now;
+                }
                 if (now - lastUpdate >= 150_000_000) {
                     switch (getSide()) {
                         case NORTH:
@@ -123,8 +137,7 @@ public class Enemy extends Creature {
         super.kill();
     }
 
-    public void cancelAnimations() {
-        movement.stop();
+    public void stopAnimations() {
         animation.stop();
     }
 
@@ -133,7 +146,7 @@ public class Enemy extends Creature {
             for (Enemy enemy : enemies) {
                 enemy.checkIfFree();
             }
-        } else
+        } else if (Exit.exit != null)
             Exit.activatePortal();
     }
 
@@ -141,6 +154,11 @@ public class Enemy extends Creature {
         if (!activated) {
             freeMob();
         }
+    }
+
+    @Override
+    Bounds getBounds() {
+        return getBoundsInLocal();
     }
 
     @Override

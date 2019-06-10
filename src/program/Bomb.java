@@ -230,8 +230,9 @@ public class Bomb extends Entity {
             try {
                 for (GameBlock block : damagedZone) {
                     for (Creature creature : Creature.getCreatures()) {
-                        if (block.containsCreature(creature))
+                        if (block.containsCreature(creature)) {
                             creature.decreaseLife();
+                        }
                     }
                 }
             } catch (ConcurrentModificationException e) {
@@ -239,5 +240,8 @@ public class Bomb extends Entity {
             }
             return null;
         }
+    }
+
+    public static void init() {
     }
 }

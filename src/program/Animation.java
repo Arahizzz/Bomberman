@@ -93,4 +93,6 @@ public class Animation {
         return image;
     }
 
+    public static void init() {
+    }
 }
