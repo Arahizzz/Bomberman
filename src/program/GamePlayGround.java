@@ -12,18 +12,18 @@ public class GamePlayGround {
     private GameBlock[][] blockArray;
 
     private int blockSize;
-
     private int blockNumberY = 13;
     private int blockNumberX = 17;
     private GameBlock spawn;
     private Random random = new Random();
     private Player player;
-    private int grassPercentage = 50;
-    private int averageMobsNumber = 7; // приблизна кількість кількість мобів
+    private int grassPercentage = 95;
+    private int averageMobsNumber = 5; // приблизна кількість кількість мобів
     private int countGrassBlocks = 0;
     int blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
     int perBlockChance = 100 / blocksPerMob;
     int mobsCreated = 0;
+    Difficulty difficulty;
     ArrayList<GrassBlock> mobBlocks = new ArrayList<GrassBlock>();
 
     public Player getPlayer() {
@@ -36,8 +36,18 @@ public class GamePlayGround {
 
     ObservableList<Node> children;
 
-    GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight) {
+    GamePlayGround(ObservableList<Node> children, double WinWidth, double WinHeight, Difficulty difficulty) {
         this.children=children;
+        this.difficulty = difficulty;
+        Difficulty.current = difficulty;
+        RedBrick.bonusChance = difficulty.getBonusPersantage();
+        grassPercentage = difficulty.getGrassPersantage();
+        averageMobsNumber = difficulty.getAverageMobNumber();
+        mobsCreated = 0;
+        countGrassBlocks = 0;
+        blocksPerMob = 130 * grassPercentage / 100 / averageMobsNumber;
+        perBlockChance = 100 / blocksPerMob;
+
         blockArray = new GameBlock[blockNumberY][blockNumberX];
         blockSize = (int) Math.min(WinWidth / blockNumberX, WinHeight / blockNumberY);
         initStoneBlocks();
@@ -46,12 +56,15 @@ public class GamePlayGround {
         generateSpawnArea((int) spawn.getY() / blockSize, (int) spawn.getX() / blockSize);
         generateExit();
         initMobs();
+        Enemy.updateMobs();
     }
 
     public void initMobs(GrassBlock spawn) {
         Enemy.getEnemies().clear();
         Platform.runLater(() -> {
             final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
+            Enemy.setSpeed(difficulty.getMobSpeed());
+            Enemy.setTurnProbability(difficulty.getTurnProbabilty());
             children.add(enemy);
         });
     }
@@ -59,6 +72,8 @@ public class GamePlayGround {
     public void initPlayer() {
         Creature.getCreatures().clear();
         player = new Player(spawn, blockArray, blockSize, children, 1);
+        player.setLife(difficulty.getLife());
+        player.setSpeed(difficulty.getPlayerSpeed());
         children.add(player);
     }
 

@@ -31,6 +31,22 @@ public class Enemy extends Creature {
         initAnimations();
     }
 
+    public static double getTurnProbability() {
+        return turnProbability;
+    }
+
+    public static void setTurnProbability(double turnProbability) {
+        Enemy.turnProbability = turnProbability;
+    }
+
+    public static double getSpeed() {
+        return speed;
+    }
+
+    public static void setSpeed(double speed) {
+        Enemy.speed = speed;
+    }
+
     private void initAnimations() {
         setSide(Side.NONE);
         setAnimationFront();

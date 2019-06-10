@@ -21,12 +21,12 @@ abstract public class Entity extends Rectangle {
 
     public Entity(double width, double height, GameBlock currentBlock, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) {
         super(width, height);
-        super.setX(currentBlock.getCenterCoordinatesX(blockSize, width));
-        super.setY(currentBlock.getCenterCoordinatesY(blockSize, height));
         this.currentBlock = currentBlock;
         this.blockArray = blockArray;
         this.blockSize = blockSize;
         this.children = children;
+        super.setX(currentBlock.getCenterCoordinatesX(blockSize, width));
+        super.setY(currentBlock.getCenterCoordinatesY(blockSize, height));
     }
 
     public GameBlock getCurrentBlock() {

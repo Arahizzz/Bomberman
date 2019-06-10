@@ -18,6 +18,11 @@ public class SingleGame {
     Group group;
     GamePlayGround gamePlayGround;
     Scene scene;
+    Difficulty difficulty;
+
+    SingleGame(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
 
     public Scene start(double winWidth, double winHeigth) {
         setGameField(winWidth, winHeigth);
@@ -41,7 +46,7 @@ public class SingleGame {
         hPane.setAlignment(Pos.CENTER);
         vPane.getChildren().add(group);
         hPane.setBackground(new Background(new BackgroundFill(Color.GRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        gamePlayGround = new GamePlayGround(group.getChildren(), winWidth, winHeigth);
+        gamePlayGround = new GamePlayGround(group.getChildren(), winWidth, winHeigth, difficulty);
         gamePlayGround.drawGrid();
     }
 
