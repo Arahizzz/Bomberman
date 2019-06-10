@@ -1,5 +1,6 @@
 package program;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -30,6 +32,31 @@ public class SingleGame {
         Exit.hasBeenCollectedProperty().addListener(observable -> {
             showEndScreen("You have won.");
         });
+        Label label = new Label();
+        hPane.getChildren().add(label);
+        AnimationTimer frameRateMeter = new AnimationTimer() {
+            final long[] frameTimes = new long[100];
+            boolean arrayFilled = false;
+            int frameTimeIndex = 0;
+
+            @Override
+            public void handle(long now) {
+                long oldFrameTime = frameTimes[frameTimeIndex];
+                frameTimes[frameTimeIndex] = now;
+                frameTimeIndex = (frameTimeIndex + 1) % frameTimes.length;
+                if (frameTimeIndex == 0) {
+                    arrayFilled = true;
+                }
+                if (arrayFilled) {
+                    long elapsedNanos = now - oldFrameTime;
+                    long elapsedNanosPerFrame = elapsedNanos / frameTimes.length;
+                    double frameRate = 1_000_000_000.0 / elapsedNanosPerFrame;
+                    label.setText(String.format("Current frame rate: %.3f", frameRate));
+                }
+            }
+        };
+
+        frameRateMeter.start();
 
         return scene;
     }
