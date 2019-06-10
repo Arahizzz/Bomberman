@@ -6,17 +6,22 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Player extends Creature {
     private BooleanProperty isAlive = new SimpleBooleanProperty(true);
     private static HashSet<Bonus> bonuses = Bonus.getBonuses();
     private static final int WIDTH = 30;
     private static final int HEIGHT = 50;
+    private double physX;
+    private double physY;
 
     private AnimationTimer animation;
 
@@ -42,6 +47,8 @@ public class Player extends Creature {
 
     Player(GameBlock spawn, GameBlock[][] blockArray, int blockSize, ObservableList<Node> children) { //Point location - це координати блоку (лівий верхній кут)
         super(WIDTH, HEIGHT, spawn, blockArray, blockSize, children, 1);
+        physX = getX();
+        physY = getY();
         startMovement();
     }
 
@@ -92,68 +99,131 @@ public class Player extends Creature {
     void startMovement() {
         setAnimationFront();
         animation = new AnimationTimer() {
-            private static final double preferredFPS = 60;
-            private long lastUpdate = 0;
-            private long previousTime;
-            private float secondsElapsedSinceLastFpsUpdate = 0f;
-            private int framesSinceLastFpsUpdate = 0;
-            private double scale = 1;
+            private Runnable updater;
+            private Runnable renderer;
+            private Runnable animator;
+            private Consumer<Float> interpolator;
 
-            private double getSpeed() {
-                return Player.this.getSpeed() * scale;
+            {
+                interpolator = new Consumer<Float>() {
+                    @Override
+                    public void accept(Float alpha) {
+                        switch (getSide()) {
+                            case NORTH:
+                                setTranslateY(-getSpeed() * alpha);
+                                break;
+                            case SOUTH:
+                                setTranslateY(getSpeed() * alpha);
+                                break;
+                            case WEST:
+                                setTranslateX(-getSpeed() * alpha);
+                                break;
+                            case EAST:
+                                setTranslateX(getSpeed() * alpha);
+                                break;
+                        }
+                    }
+                };
+
+                updater = new Runnable() {
+                    @Override
+                    public void run() {
+                        updateBlock();
+                        checkBonuses();
+                        switch (getSide()) {
+                            case NORTH:
+                                physY = physY - getSpeed();
+                                break;
+                            case SOUTH:
+                                physY = physY + getSpeed();
+                                break;
+                            case WEST:
+                                physX = physX - getSpeed();
+                                break;
+                            case EAST:
+                                physX = physX + getSpeed();
+                                break;
+                        }
+                    }
+                };
+
+                renderer = new Runnable() {
+                    @Override
+                    public void run() {
+                        setTranslateX(0);
+                        setTranslateY(0);
+                        setX(physX);
+                        setY(physY);
+                    }
+                };
+
+                animator = new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (getSide()) {
+                            case NORTH:
+                                setAnimationBack();
+                                break;
+                            case WEST:
+                                setAnimationLeft();
+                                break;
+                            case SOUTH:
+                                setAnimationFront();
+                                break;
+                            case EAST:
+                                setAnimationRight();
+                        }
+                    }
+                };
             }
 
-            private void calculateScale(long currentTime) {
+            private static final float timeStep = 0.0166f;
+            private float accumulatedTime = 0;
+            private long previousTime = 0;
+            private long lastUpdate;
+
+            @Override
+            public void handle(long currentTime) {
+                if (currentTime - lastUpdate >= 150_000_000) {
+                    animator.run();
+                    lastUpdate = currentTime;
+                }
+
                 if (previousTime == 0) {
                     previousTime = currentTime;
                     return;
                 }
 
                 float secondsElapsed = (currentTime - previousTime) / 1e9f;
+                float secondsElapsedCapped = Math.min(secondsElapsed, 0.05f);
+                accumulatedTime += secondsElapsedCapped;
                 previousTime = currentTime;
 
-
-                secondsElapsedSinceLastFpsUpdate += secondsElapsed;
-                framesSinceLastFpsUpdate++;
-                if (secondsElapsedSinceLastFpsUpdate >= 0.5f) {
-                    int fps = Math.round(framesSinceLastFpsUpdate / secondsElapsedSinceLastFpsUpdate);
-                    scale = preferredFPS / fps;
-                    secondsElapsedSinceLastFpsUpdate = 0;
-                    framesSinceLastFpsUpdate = 0;
+                if (accumulatedTime < timeStep) {
+                    float remainderOfTimeStepSincePreviousInterpolation =
+                            timeStep - (accumulatedTime - secondsElapsed);
+                    float alphaInRemainderOfTimeStep =
+                            secondsElapsed / remainderOfTimeStepSincePreviousInterpolation;
+                    interpolator.accept(alphaInRemainderOfTimeStep);
+                    return;
                 }
+
+                while (accumulatedTime >= 2 * timeStep) {
+                    updater.run();
+                    accumulatedTime -= timeStep;
+                }
+                renderer.run();
+                updater.run();
+                accumulatedTime -= timeStep;
+                float alpha = accumulatedTime / timeStep;
+                interpolator.accept(alpha);
             }
 
             @Override
-            public void handle(long now) {
-                calculateScale(now);
-                updateBlock();
-                checkBonuses();
-                if (getSide() == Side.NORTH && northIsClear()) {
-                    setY(getY() - getSpeed());
-                } else if (getSide() == Side.SOUTH && southIsClear()) {
-                    setY(getY() + getSpeed());
-                } else if (getSide() == Side.WEST && westIsClear()) {
-                    setX(getX() - getSpeed());
-                } else if (getSide() == Side.EAST && eastIsClear()) {
-                    setX(getX() + getSpeed());
-                }
-                if (now - lastUpdate >= 150_000_000) {
-                    switch (getSide()) {
-                        case NORTH:
-                            setAnimationBack();
-                            break;
-                        case SOUTH:
-                            setAnimationFront();
-                            break;
-                        case EAST:
-                            setAnimationRight();
-                            break;
-                        case WEST:
-                            setAnimationLeft();
-                            break;
-                    }
-                    lastUpdate = now;
-                }
+            public void stop() {
+                previousTime = 0;
+                accumulatedTime = 0;
+                super.stop();
             }
         };
         animation.start();
@@ -171,11 +241,15 @@ public class Player extends Creature {
 
     private void checkBonuses() {
         for (Bonus bonus : bonuses) {
-            if (bonus.intersects(getBoundsInLocal())) {
+            if (bonus.intersects(getBounds())) {
                 bonus.activate(this);
                 break;
             }
         }
+    }
+
+    public Bounds getBounds() {
+        return new Rectangle(physX, physY, WIDTH, HEIGHT).getBoundsInLocal();
     }
 
     @Override

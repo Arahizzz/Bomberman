@@ -5,6 +5,7 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
@@ -170,19 +171,19 @@ abstract class Creature extends Entity {
     public void updateBlock() {
         switch (getSide()) {
             case NORTH:
-                if (getTopBlock().isInsideBlock(this.getBoundsInLocal()))
+                if (getTopBlock().isInsideBlock(getBounds()))
                     setCurrentBlock(getTopBlock());
                 break;
             case WEST:
-                if (getLeftBlock().isInsideBlock(this.getBoundsInLocal()))
+                if (getLeftBlock().isInsideBlock(getBounds()))
                     setCurrentBlock(getLeftBlock());
                 break;
             case EAST:
-                if (getRightBlock().isInsideBlock(this.getBoundsInLocal()))
+                if (getRightBlock().isInsideBlock(getBounds()))
                     setCurrentBlock(getRightBlock());
                 break;
             case SOUTH:
-                if (getBottomBlock().isInsideBlock(this.getBoundsInLocal()))
+                if (getBottomBlock().isInsideBlock(getBounds()))
                     setCurrentBlock(getBottomBlock());
                 break;
         }
@@ -191,6 +192,8 @@ abstract class Creature extends Entity {
     abstract void startMovement();
 
     abstract void stopAnimations();
+
+    abstract Bounds getBounds();
 }
 
 enum Side {
