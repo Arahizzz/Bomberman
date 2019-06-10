@@ -97,7 +97,7 @@ controller.initBackGroundImage(win);
                         gamePlayGround.getPlayer().setSide(Side.EAST);
                         break;
                     case SPACE:
-                        gamePlayGround.putBomb();
+                        gamePlayGround.getPlayer().putBomb();
                 }
             }
         });

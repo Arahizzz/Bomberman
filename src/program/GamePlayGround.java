@@ -49,6 +49,7 @@ public class GamePlayGround {
     }
 
     public void initMobs(GrassBlock spawn) {
+        Enemy.getEnemies().clear();
         Platform.runLater(() -> {
             final Enemy enemy = new Enemy(spawn, blockArray, blockSize, children);
             children.add(enemy);
@@ -56,6 +57,7 @@ public class GamePlayGround {
     }
 
     public void initPlayer() {
+        Creature.getCreatures().clear();
         player = new Player(spawn, blockArray, blockSize, children);
         children.add(player);
     }
@@ -404,14 +406,6 @@ public class GamePlayGround {
 
     public Rectangle getElementAt(int row, int column) {
         return blockArray[row][column];
-    }
-
-    public void putBomb() {
-        Bomb bomb = player.putBomb();
-        if (bomb != null) {
-            children.add(bomb);
-            bomb.activate();
-        }
     }
 
 }

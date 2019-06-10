@@ -117,6 +117,7 @@ public class Enemy extends Creature {
     @Override
     public void kill() {
         enemies.remove(this);
+        Enemy.updateMobs();
         super.kill();
     }
 

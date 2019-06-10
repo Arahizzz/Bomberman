@@ -209,8 +209,12 @@ public class Player extends Creature {
     }
 
 
-    public Bomb putBomb() {
-        return Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
+    public void putBomb() {
+        Bomb bomb = Bomb.newBomb(this, getBlockArray(), getBlockSize(), getChildren());
+        if (bomb != null) {
+            getChildren().add(bomb);
+            bomb.activate();
+        }
     }
 
     class EnemyChecker extends Task<Void> {

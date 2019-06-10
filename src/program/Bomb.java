@@ -211,7 +211,6 @@ public class Bomb extends Entity {
                 @Override
                 public void run() {
                     children.replaceAll(operator);
-                    Enemy.updateMobs();
                 }
             });
             return null;
@@ -230,8 +229,9 @@ public class Bomb extends Entity {
             try {
                 for (GameBlock block : damagedZone) {
                     for (Creature creature : Creature.getCreatures()) {
-                        if (block.containsCreature(creature))
+                        if (block.containsCreature(creature)) {
                             creature.decreaseLife();
+                        }
                     }
                 }
             } catch (ConcurrentModificationException e) {
