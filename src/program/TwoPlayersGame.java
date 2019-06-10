@@ -29,7 +29,10 @@ public class TwoPlayersGame {
         initListeners(gamePlayGroundTwoPlayers);
 
         addCharacterisitcs(gamePlayGroundTwoPlayers.getPlayer1());
+        hPane.getChildren().add(group);
         addEndListeners(gamePlayGroundTwoPlayers.getPlayer1());
+        addCharacterisitcs(gamePlayGroundTwoPlayers.getPlayer2());
+        addEndListeners(gamePlayGroundTwoPlayers.getPlayer2());
         ///////////////////////2 player
        // Exit.hasBeenCollectedProperty().addListener(observable -> {
        //     showEndScreen("You have won.");
@@ -52,7 +55,7 @@ public class TwoPlayersGame {
     private void addCharacterisitcs(Player player) {
         Characteristics characteristics = new Characteristics(player);
         characteristics.setAlignment(Pos.CENTER);
-        hPane.getChildren().addAll(characteristics, vPane);
+        hPane.getChildren().add(characteristics);
     }
 
     private void addEndListeners(Player player) {
