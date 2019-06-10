@@ -108,20 +108,14 @@ public class Player extends Creature {
                 interpolator = new Consumer<Float>() {
                     @Override
                     public void accept(Float alpha) {
-                        switch (getSide()) {
-                            case NORTH:
-                                setTranslateY(-getSpeed() * alpha);
-                                break;
-                            case SOUTH:
-                                setTranslateY(getSpeed() * alpha);
-                                break;
-                            case WEST:
-                                setTranslateX(-getSpeed() * alpha);
-                                break;
-                            case EAST:
-                                setTranslateX(getSpeed() * alpha);
-                                break;
-                        }
+                        if (getSide() == Side.NORTH && northIsClear())
+                            setTranslateY(-getSpeed() * alpha);
+                        else if (getSide() == Side.SOUTH && southIsClear())
+                            setTranslateY(getSpeed() * alpha);
+                        else if (getSide() == Side.WEST && westIsClear())
+                            setTranslateX(-getSpeed() * alpha);
+                        else if (getSide() == Side.EAST && eastIsClear())
+                            setTranslateX(getSpeed() * alpha);
                     }
                 };
 
@@ -130,20 +124,14 @@ public class Player extends Creature {
                     public void run() {
                         updateBlock();
                         checkBonuses();
-                        switch (getSide()) {
-                            case NORTH:
-                                physY = physY - getSpeed();
-                                break;
-                            case SOUTH:
-                                physY = physY + getSpeed();
-                                break;
-                            case WEST:
-                                physX = physX - getSpeed();
-                                break;
-                            case EAST:
-                                physX = physX + getSpeed();
-                                break;
-                        }
+                        if (getSide() == Side.NORTH && northIsClear())
+                            physY = physY - getSpeed();
+                        else if (getSide() == Side.SOUTH && southIsClear())
+                            physY = physY + getSpeed();
+                        else if (getSide() == Side.WEST && westIsClear())
+                            physX = physX - getSpeed();
+                        else if (getSide() == Side.EAST && eastIsClear())
+                            physX = physX + getSpeed();
                     }
                 };
 
